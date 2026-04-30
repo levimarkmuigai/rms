@@ -1,0 +1,16 @@
+[package]
+name = "rms"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+argon2 = { version = "0.5.3", features = ["std"] }
+dotenvy = "0.15.7"
+postgres = { version = "0.19.13", features = ["with-uuid-1"] }
+r2d2 = "0.8.10"
+r2d2_postgres = "0.18.2"
+rand = { version = "0.10.1", features = ["std", "std_rng"] }
+thiserror = "2.0.18"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+uuid = { version = "1.23.1", features = ["v4"] }

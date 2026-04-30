@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+    <aside>
+      <div class="aside-items">
+        <button type="" id="profile-btn">{{ landlord_name }}</button>
+        <a href="landlord_pages/buildings.html">buildings</a>
+      </div>
+    </aside>
+    <div class="dash-container">
+      <header class="dash-header">
+        <h1 class="page-title">portfolio overview</h1>
+        <span class="date-stamp">{{ date_label }}</span>
+      </header>
+
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-label">collected revenue</span>
+          <span class="kpi-value">{{ collected_revenue }}</span>
+          <span class="kpi-context">expected: {{ expected_revenue }}</span>
+        </div>
+
+         <div class="kpi-card">
+          <span class="kpi-label">active occupancy</span>
+          <span class="kpi-value">{{ occupancy_pct }}</span>
+          <span class="kpi-context">{{ vacant_units }}</span>
+        </div>
+
+         <div class="kpi-card">
+          <span class="kpi-label">total arrears</span>
+          <span class="kpi-value">{{ total_arrears }}</span>
+          <span class="kpi-context">{{ arrears_context }}</span>
+        </div>
+      </div>
+
+      <div class="triage-section">
+         <div class="triage-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">open requests</h2>
+            <a href="/templates/maintenance.html" class="panel-link">view all</a>
+          </div>
+          {{ open_requests }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="profile-modal" class="card-hidden">
+      <div class="profile-card">
+        <form id="profile-form" action="/update_profile" method="POST">
+          <fieldset class="form-group">
+            <legend>Personal Details</legend>
+            <div class="input-row">
+              <div class="input-container">
+                <label for="update-fname">First Name</label>
+                <input type="text" id="update-fname" name="first-name">
+
+                <span id="update-fname-error" class="error-message"></span>
+              </div>
+              <div class="input-container">
+                <label for="update-lname">Last Name</label>
+                <input type="text" id="update-lname" name="last-name">
+
+                <span id="update-lname-error" class="error-message"></span>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="form-group">
+            <legend>Contacts</legend>
+            <div class="input-row">
+              <div class="input-container">
+                <label for="update-email">Email</label>
+                <input type="text" id="update-email" name="email">
+
+                <span id="update-email-error" class="error-message"></span>
+              </div>
+              <div class="input-container">
+                <label for="update-number">Number</label>
+                <input type="text" id="update-number" name="number" placeholder="07XXXXXXXX">
+
+                <span class="error-message" id="update-number-error"></span>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="form-group">
+            <legend>Credentials</legend>
+            <div class="input-container">
+              <label for="update-password">Password</label>
+              <input type="password" id="update-password" name="password">
+
+              <span class="error-message" id="update-password-error"></span>
+            </div>
+          </fieldset>
+          <button type="submit" class="form-button">Update Account</button>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="../static/js/main.js"></script>
+  </body>
+</html>
+
