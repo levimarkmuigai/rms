@@ -28,4 +28,3 @@ pub fn update_profile(req: &Request, state: &Arc<AppState>) -> Result<Response, 
 
     Ok(Response::redirect(redirect))
 }
-

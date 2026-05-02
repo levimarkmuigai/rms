@@ -17,11 +17,17 @@ pub fn handle_connection(mut stream: TcpStream, router: &Router) -> Result<(), A
 
     tracing::debug!(method = %req.method, path = %req.path, "request");
 
-    let res = router.dispatch(&req).unwrap_or_else(|e| match e {
-        AppError::Unauthorized => Response::redirect("/"),
-        AppError::NotFound(_) => Response::html(404, "<h1>404 Not Found</h1>".into()),
-        AppError::BadRequest(m) => Response::html(400, format!("<h1>Bad Request: {m}</h1>")),
-        _ => Response::html(500, "<h1>Internal Server Error</h1>".into()),
+    let res = router.dispatch(&req).unwrap_or_else(|e| {
+        match &e {
+            AppError::Unauthorized => tracing::warn!("{e}"),
+            _ => tracing::error!("{e:#?}"),
+        }
+        match &e {
+            AppError::Unauthorized => Response::redirect("/"),
+            AppError::NotFound(_) => Response::html(404, "<h1>404 Not Found</h1>".into()),
+            AppError::BadRequest(m) => Response::html(400, format!("<h1>Bad Request: {m}</h1>")),
+            _ => Response::html(500, "<h1>Internal Server Error</h1>".into()),
+        }
     });
 
     tracing::debug!(status = res.status, "response");

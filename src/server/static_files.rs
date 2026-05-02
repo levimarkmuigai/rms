@@ -24,7 +24,7 @@ fn mime_type(path: &str) -> &'static str {
     if path.ends_with(".css") {
         "text/css"
     } else if path.ends_with(".js") {
-        "applications/javascript"
+        "text/javascript"
     } else if path.ends_with(".html") {
         "text/html; charset=utf-8"
     } else {

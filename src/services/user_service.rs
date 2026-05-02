@@ -25,7 +25,7 @@ pub fn signup(
 }
 
 pub fn authenticate(pool: &PgPool, email: &str, password: &str) -> Result<User, AppError> {
-    let user = user_repo::find_by_email(pool, &email)?.ok_or_else(|| {
+    let user = user_repo::find_by_email(pool, email)?.ok_or_else(|| {
         tracing::warn!(email, "failed login attempt");
         AppError::Unauthorized
     })?;

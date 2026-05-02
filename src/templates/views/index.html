@@ -1,3 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/index.css"/>
+</head>
+<body>
+  <div class="main">
+    <div class="introduction">
+      <h1>Welcome to RMS</h1>
+      <h3>
+        The smart way to manage your building.
+        A modern workspace for modern living.
+        Whether you own the property, manage the day to day,
+        or call it home, RMS keeps everyone on the same page.
+      </h3>
+    </div>
+    <div class="button-group">
+      <button id="signup">Sign up</button>
+      <button id="login">Login</button>
+    </div>
+  </div>
+
+  <div id="signup-modal" class="card-hidden">
+    <div class="signup-card">
+      <form action="/signup" method="POST" id="signup-form">
+        <fieldset class="form-group">
+          <legend>Personal Details</legend>
+          <div class="input-row">
+            <div class="input-container">
+              <label for="first-name">First Name</label>
+              <input type="text" id="first-name" name="first-name">
+
+              <span id="fname-error" class="error-message"></span>
+            </div>
+            <div class="input-container">
+              <label for="last-name">Last Name</label>
+              <input type="text" id="last-name" name="last-name">
+
+              <span id="lname-error" class="error-message"></span>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset class="form-group">
+          <legend>Contacts</legend>
+          <div class="input-row">
+            <div class="input-container">
+              <label for="email">Email</label>
+              <input type="text" id="email" name="email">
+
+              <span id="email-error" class="error-message"></span>
+            </div>
+            <div class="input-container">
+              <label for="number">Number</label>
+              <input type="text" id="number" name="number" placeholder="07XXXXXXXX">
+
               <span class="error-message" id="number-error"></span>
             </div>
           </div>
@@ -32,7 +91,7 @@
 
   <div id="login-modal" class="card-hidden">
     <div class="login-card">
-      <form action="http://127.0.0.1:8080/login" method="POST">
+      <form action="/login" method="POST">
         <fieldset class="form-group">
           <legend>Credentials</legend>
           <div class="input-container">
@@ -49,7 +108,7 @@
     </div>
   </div>
 
-  <script type="module" src="../static/js/main.js"></script>
+  <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>
 

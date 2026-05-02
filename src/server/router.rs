@@ -32,14 +32,29 @@ impl Router {
 pub fn build(state: Arc<AppState>) -> Router {
     let mut routes: HashMap<(&'static str, &'static str), Handler> = HashMap::new();
     routes.insert(("POST", "/login"), crate::handlers::auth::login_submit);
+    routes.insert(("POST", "/signup"), crate::handlers::auth::signup_submit);
     routes.insert(
         ("POST", "/update_profile"),
         crate::handlers::users::update_profile,
     );
-
     routes.insert(("GET", "/"), crate::handlers::home::index);
-    //routes.insert(("GET", "/landlord"), crate::handlers::landlords::dashboard);
-    //routes.insert(("GET", "/buildings"), crate::handlers::landlords::buildings);
+
+    routes.insert(
+        ("GET", "/landlord"),
+        crate::handlers::landlord::dashboard::show,
+    );
+    routes.insert(
+        ("GET", "/landlord/buildings"),
+        crate::handlers::landlord::buildings::show,
+    );
+    routes.insert(
+        ("POST", "/landlord/buildings"),
+        crate::handlers::landlord::buildings::add,
+    );
+    routes.insert(
+        ("POST", "/landlord/buildings/delete"),
+        crate::handlers::landlord::buildings::delete,
+    );
 
     Router { routes, state }
 }

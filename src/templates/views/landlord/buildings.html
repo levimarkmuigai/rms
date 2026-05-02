@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Property Portfolio</title>
+    <link href="/static/css/landlord_pages/buildings.css" rel="stylesheet">
+  </head>
+  <body>
+    <aside>
+      <div class="aside-items">
+        <a href="/dashboard">profile</a>
+        <a href="/buildings" class="current-page">buildings</a>
+    </aside>
+
+    <div class="dash-container">
+      <header class="dash-header">
+        <div class="header-group">
+          <a href="/dashboard" class="back-link">← back to dashboard</a>
+          <h1 class="page-title">property portfolio</h1>
+          <span class="date-stamp">{{buildings_count}}</span>
+        </div>
+        <button class="header-btn" id="open-add-modal">add building +</button>
+      </header>
+
+      <div class="split-view">
+        <div class="master-list">
+          {{buildings_list}}
+        </div>
+
+        <main class="detail-panel">
+          {{detail}}
+        </main>
+      </div>
+    </div>
+
+     <div id="building-modal" class="card-hidden">
+      <div class="building-card">
+        {{ form_html }}
+      </div>
+    </div>
+
+    <script type="module" src="../static/js/main.js"></script>
+  </body>
+</html>

@@ -107,6 +107,8 @@ aside {
   font-weight: 500;
 }
 
+.hidden { display: none; }
+
 .kpi-row {
   display: flex;
   gap: 20px;

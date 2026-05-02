@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
-    <link href="/static/css/dashboard.css" rel="stylesheet">
+    <link href="/static/css/landlord.css" rel="stylesheet">
   </head>
   <body>
     <aside>
       <div class="aside-items">
         <button type="" id="profile-btn">{{ landlord_name }}</button>
-        <a href="landlord_pages/buildings.html">buildings</a>
+        <a href="landlord/buildings">buildings</a>
       </div>
     </aside>
     <div class="dash-container">
@@ -19,7 +19,7 @@
         <span class="date-stamp">{{ date_label }}</span>
       </header>
 
-      <div class="kpi-row">
+      <div class="kpi-row {{ kpi_block }}">
         <div class="kpi-card">
           <span class="kpi-label">collected revenue</span>
           <span class="kpi-value">{{ collected_revenue }}</span>
