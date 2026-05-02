@@ -2,7 +2,7 @@ import { closeModal, openModal } from "./utils/modal.js";
 
 export const initBuildingModal = () => {
   const addBtn = document.getElementById('open-add-modal');
-  const buildingId = document.getElementById("building-modal");
+  const buildingId = document.getElementById("add-building-modal");
 
   if (!addBtn) return;
 

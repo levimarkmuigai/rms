@@ -55,6 +55,10 @@ pub fn build(state: Arc<AppState>) -> Router {
         ("POST", "/landlord/buildings/delete"),
         crate::handlers::landlord::buildings::delete,
     );
+    routes.insert(
+        ("POST", "/landlord/units"),
+        crate::handlers::landlord::unit::add,
+    );
 
     Router { routes, state }
 }

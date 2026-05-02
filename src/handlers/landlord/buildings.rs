@@ -53,7 +53,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                 format!(
                     "<a href=\"/buildings?id={id}\" class=\"list-item{active}\">
                 <span class=\"b-name\">{name}</span>
-                <span class=\"b-meta\">{units}
+                <span class=\"b-meta\">{units} </span>
                 </a>",
                     id = b.id,
                     name = b.name,
@@ -69,7 +69,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
             "<div class=\"detail-header\">
             <h2 class=\"detail-title\">{name}</h2>
             <div class=\"detail-actions\">
-            <a href=\"/add-unit?id={id}\" class=\"edit-link\">+add unit</a>
+            <button id=\"open-add-unit\">+ add unit</button>
             <form action=\"/delete-building\" method=\"POST\" class=\"inline-form\"
             onsubmit=\"return confirm('permanently delete this building?');\">
             <input type=\"hidden\" name=\"building_id\" value=\"{id}\">
@@ -84,7 +84,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
             </div>
             <div class=\"b-stat-box\">
             <span class=\"stat-label\">occupied</span>
-            <Span class=\"stat-value\">{occupied}</span>
+            <span class=\"stat-value\">{occupied}</span>
             <span class=\"stat-context\">{vacant}</span>
             </div>
             </div>",
@@ -97,6 +97,10 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     };
 
     let buildings_count = cards.len();
+
+    let unit_form = active_id
+        .map(|b_id| add_unit_form(&b_id))
+        .unwrap_or_default();
     let mut ctx: HashMap<&str, String> = HashMap::new();
     ctx.insert(
         "buildings_count",
@@ -107,7 +111,8 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     );
     ctx.insert("buildings_list", list_html);
     ctx.insert("detail", detail_html);
-    ctx.insert("form_html", add_building_form());
+    ctx.insert("building_form_html", add_building_form());
+    ctx.insert("unit_form_html", unit_form);
 
     Ok(Response::html(200, engine::render(BUILDINGS_HTML, &ctx)))
 }
@@ -126,7 +131,7 @@ pub fn delete(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError
     let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
     let f = form::parse(&req.body);
     let building_id = f
-        .get("builfing_id")
+        .get("building_id")
         .and_then(|v| v.parse::<Uuid>().ok())
         .ok_or_else(|| AppError::BadRequest("invalid building_id".into()))?;
 
@@ -137,12 +142,12 @@ pub fn delete(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError
 }
 
 fn add_building_form() -> String {
-    r#"<form action="/landlord/buildings" method="POST" id="building-form">
+    r#"<form action="/landlord/buildings" method="POST" id="add-building-form">
     <fieldset class="form-group">
     <legend> Building Details</legend>
     <div class="input-container">
     <label for="building-name">Building Name</label>
-    <input type="text" id="building-name" name="name" required>
+    <input type="text" id="building-name" name="name">
     <span class="error-message" id="name-error"></span>
     </div>
     </fieldset>
@@ -150,4 +155,29 @@ fn add_building_form() -> String {
     </form>
     "#
     .into()
+}
+
+fn add_unit_form(building_id: &Uuid) -> String {
+    format!(
+        "
+    <form action=\"/landlord/units\" method=\"POST\" id=\"add-unit-form\">
+        <fieldset class=\"form-group\">
+          <legend> Unit Details</legend>
+          <input type=\"hidden\" name=\"building-id\" value=\"{}\">
+          <div class=\"input-container\">
+            <label for=\"unit-number\">Unit Number</label>
+            <input type=\"text\" name=\"unit-number\" id=\"unit-number\">
+            <span class=\"error-message\" id=\"unit-number-error\"></span>
+          </div>
+          <div class=\"input-container\">
+            <label for=\"rent-amount\">Rent Amount</label>
+            <input type=\"text\" name=\"rent-amount\" id=\"rent-amount\">
+            <span class=\"error-message\" id=\"rent-amount-error\"></span>
+          </div>
+        </fieldset>
+        <button type=\"submit\" class=\"form-button\">Add Unit</button>
+      </form>
+    ",
+        building_id
+    )
 }

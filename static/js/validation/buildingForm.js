@@ -1,6 +1,6 @@
 export const buildingValidation = () => {
-  const nameInput = document.getElementById('building-name');
-  const buildingForm = document.getElementById('building-form');
+  const nameInput = document.getElementById('add-building-name');
+  const buildingForm = document.getElementById('add-building-form');
 
   if (!buildingForm || !nameInput) return;
 

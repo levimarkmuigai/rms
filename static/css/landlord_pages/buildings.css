@@ -235,15 +235,16 @@ aside {
   margin: 0;
 }
 
-.edit-link {
+#open-add-unit {
   color: var(--text-muted);
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
   transition: color 150ms ease;
+  border: 1px solid transparent;
 }
 
-.edit-link:hover {
+#open-add-unit:hover {
   color: var(--ink);
 }
 
@@ -305,7 +306,7 @@ aside {
 }
 
 
-#building-modal {
+#add-building-modal, #add-unit-modal {
   display: flex;
   background: rgba(237,232,240,0.75);
   backdrop-filter: blur(6px);
@@ -332,7 +333,7 @@ aside {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.building-card {
+.add-building-card, .add-unit-card {
   display: flex;
   flex-direction: column;
   background-color: var(--light-card);
