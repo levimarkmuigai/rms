@@ -1,3 +1,7 @@
+import {
+  validateName
+} from './userDetails.js';
+
 export const unitFormValidation = () => {
   const numberInput = document.getElementById('unit-number');
   const rentInput = document.getElementById("rent-amount");

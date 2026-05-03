@@ -1,3 +1,6 @@
+import { validateEmail, validateName, validateNumber, validatePassword } from './userDetails.js';
+
+
 export const profileValidation = () => {
   const firstNameInput = document.getElementById('update-fname');
   if (!firstNameInput) return;

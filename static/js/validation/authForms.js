@@ -1,3 +1,11 @@
+import {
+  validateName,
+  validateEmail,
+  validateNumber,
+  validateRole,
+  validatePassword
+} from './userDetails.js';
+
 export const authValidation = () => {
   const firstNameInput = document.getElementById('first-name');
   if (!firstNameInput) return;
@@ -7,12 +15,12 @@ export const authValidation = () => {
   const roleSelect = document.getElementById('role');
   const passwordInput = document.getElementById('signup-password');
 
-  firstNameInput.addEventListener('change', () => validateName(firstNameInput, "fname-error"));
-  lastNameInput.addEventListener('change', () => validateName(lastNameInput, "lname-error"));
-  emailInput.addEventListener('change', () => validateEmail(emailInput, "email-error"));
-  numberInput.addEventListener('change', () => validateNumber(numberInput, "number-error"));
-  roleSelect.addEventListener('change', () => validateRole(roleSelect, "role-error"));
-  passwordInput.addEventListener('change', () => validatePassword(passwordInput, "password-error"));
+  firstNameInput.addEventListener('input', () => validateName(firstNameInput, "fname-error"));
+  lastNameInput.addEventListener('input', () => validateName(lastNameInput, "lname-error"));
+  emailInput.addEventListener('input', () => validateEmail(emailInput, "email-error"));
+  numberInput.addEventListener('input', () => validateNumber(numberInput, "number-error"));
+  roleSelect.addEventListener('input', () => validateRole(roleSelect, "role-error"));
+  passwordInput.addEventListener('input', () => validatePassword(passwordInput, "password-error"));
 
   const signupForm = document.getElementById('signup-form');
 

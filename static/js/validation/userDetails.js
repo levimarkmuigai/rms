@@ -27,7 +27,7 @@ export function validateRole(roleSelect, errorSpanId) {
 }
 
 export function validateNumber(numberInput, errorSpanId) {
-  if (numberInput.value.trim().length === 10) {
+  if (numberInput.value.trim().length !== 10) {
     setErrorState(numberInput, errorSpanId, "You must enter a valid phonenumber.");
     return false;
   }

@@ -1,3 +1,7 @@
+import {
+  validateName
+} from './userDetails.js';
+
 export const buildingValidation = () => {
   const nameInput = document.getElementById('add-building-name');
   const buildingForm = document.getElementById('add-building-form');
