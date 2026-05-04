@@ -39,3 +39,11 @@ impl fmt::Display for UnitStatus {
         write!(f, "{s}")
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct UnitPortfolioSummary {
+    pub id: Uuid,
+    pub number: String,
+    pub status: String,
+    pub rent_amount: i64,
+}

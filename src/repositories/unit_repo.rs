@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{
     db::PgPool,
-    entities::unit::{Unit, UnitStatus},
+    entities::unit::{Unit, UnitPortfolioSummary, UnitStatus},
     error::AppError,
 };
 
@@ -49,4 +49,32 @@ pub fn find_by_id(pool: &PgPool, id: &Uuid) -> Result<Option<Unit>, AppError> {
             tenant_id: r.get("tenant_id"),
         }
     }))
+}
+
+pub fn unit_portfolio_summary(
+    pool: &PgPool,
+    building_id: &Uuid,
+) -> Result<Vec<UnitPortfolioSummary>, AppError> {
+    let mut client = pool.get()?;
+    let rows = client.query(
+        "SELECT
+        id,
+        rent_amount,
+        unit_number,
+        status
+        FROM units
+        WHERE building_id = $1
+        ",
+        &[&building_id],
+    )?;
+
+    Ok(rows
+        .iter()
+        .map(|r| UnitPortfolioSummary {
+            id: r.get("id"),
+            number: r.get("unit_number"),
+            rent_amount: r.get("rent_amount"),
+            status: r.get("status"),
+        })
+        .collect())
 }
