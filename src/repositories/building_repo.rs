@@ -70,7 +70,7 @@ pub fn collected_this_month(
     let rows = client.query(
         "
         SELECT COALESCE(SUM(p.amount), 0) AS collected
-        FROM payment p
+        FROM payments p
         JOIN units u ON u.id = p.unit_id
         JOIN buildings b on b.id = u.building_id
         WHERE b.landlord_id = $1

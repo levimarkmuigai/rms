@@ -51,20 +51,18 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                     ""
                 };
                 format!(
-                    "<a href=\"/buildings?id={id}\" class=\"list-item{active}\">
+                    "<a href=\"/landlord/buildings?id={id}\" class=\"list-item{active}\">
                 <span class=\"b-name\">{name}</span>
-                <span class=\"b-meta\">{units} </span>
                 </a>",
                     id = b.id,
                     name = b.name,
-                    units = b.total_units,
                 )
             })
             .collect()
     };
 
     let detail_html: String = match active_id.and_then(|id| cards.iter().find(|b| b.id == id)) {
-        None => "<p clas=\"empty-detail\">select a building to see details.</p>".into(),
+        None => "<p class=\"empty-detail\">select a building to see details.</p>".into(),
         Some(b) => format!(
             "<div class=\"detail-header\">
             <h2 class=\"detail-title\">{name}</h2>
@@ -85,6 +83,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
             <div class=\"b-stat-box\">
             <span class=\"stat-label\">occupied</span>
             <span class=\"stat-value\">{occupied}</span>
+            <span class=\"stat-label\">vacant</span>
             <span class=\"stat-context\">{vacant}</span>
             </div>
             </div>",

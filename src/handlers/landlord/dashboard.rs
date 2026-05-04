@@ -65,7 +65,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
 
     if summary.has_buildings {
         ctx.insert("collected_revenue", kes(summary.collected_revenue));
-        ctx.insert("collected_revenue", kes(summary.expected_revenue));
+        ctx.insert("expected_revenue", kes(summary.expected_revenue));
         ctx.insert("occupancy_pct", format!("{}%", summary.occupancy_pct));
         ctx.insert(
             "vacant_units",
