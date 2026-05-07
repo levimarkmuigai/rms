@@ -44,6 +44,10 @@ pub fn get(pool: &PgPool, id: &Uuid) -> Result<User, AppError> {
     user_repo::find_by_id(pool, id)?.ok_or_else(|| AppError::NotFound(id.to_string()))
 }
 
+pub fn get_unassigned_tenant(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
+    user_repo::find_unassigned_tenants(pool)
+}
+
 pub fn update(
     pool: &PgPool,
     id: &Uuid,

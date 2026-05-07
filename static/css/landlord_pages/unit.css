@@ -1,0 +1,26 @@
+:root {
+  --ink: #111111;
+  --text-muted: #A0A0A0;
+}
+
+.building-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+
+.building-tab  {
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color 200ms ease, color 200ms ease;
+}
+
+.building-tab a:hover {
+  transform: scale(0.95);
+  color: var(--ink);
+}
+
+.active-building {
+  color: var(--ink);
+}

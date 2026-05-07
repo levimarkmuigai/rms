@@ -5,6 +5,7 @@ use uuid::Uuid;
 use crate::{
     entities::user::Role,
     error::AppError,
+    handlers::landlord::utils,
     server::{auth, form, request::Request, response::Response},
     services::landlord::{building_service, dashboard_service},
     state::AppState,
@@ -12,19 +13,6 @@ use crate::{
 };
 
 const BUILDINGS_HTML: &str = include_str!("../../templates/views/landlord/buildings.html");
-
-fn kes(amount: i64) -> String {
-    let s = amount.to_string();
-    let with_commas = s
-        .as_bytes()
-        .rchunks(3)
-        .rev()
-        .map(std::str::from_utf8)
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap_or_default()
-        .join(",");
-    format!("Ksh {with_commas}")
-}
 
 fn current_month_year() -> String {
     chrono::Utc::now().format("%Y-%m").to_string()
@@ -89,7 +77,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
             </div>",
             name = b.name,
             id = b.id,
-            collected = kes(b.collected),
+            collected = utils::kes(b.collected),
             occupied = b.is_occupied,
             vacant = b.vacant,
         ),

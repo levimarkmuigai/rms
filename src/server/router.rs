@@ -48,6 +48,10 @@ pub fn build(state: Arc<AppState>) -> Router {
         crate::handlers::landlord::buildings::show,
     );
     routes.insert(
+        ("GET", "/landlord/units"),
+        crate::handlers::landlord::unit::show,
+    );
+    routes.insert(
         ("POST", "/landlord/buildings"),
         crate::handlers::landlord::buildings::add,
     );
@@ -59,6 +63,9 @@ pub fn build(state: Arc<AppState>) -> Router {
         ("POST", "/landlord/units"),
         crate::handlers::landlord::unit::add,
     );
-
+    routes.insert(
+        ("POST", "/landlord/unit/assign"),
+        crate::handlers::landlord::unit::assign_unit,
+    );
     Router { routes, state }
 }

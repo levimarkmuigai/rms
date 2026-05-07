@@ -8,11 +8,11 @@ use crate::{
 
 pub struct PortfolioSummary {
     pub has_buildings: bool,
-    pub collected_revenue: i64,
-    pub expected_revenue: i64,
+    pub collected_revenue: i32,
+    pub expected_revenue: i32,
     pub occupancy_pct: i64,
     pub vacant_units: i64,
-    pub total_arrears: i64,
+    pub total_arrears: i32,
     pub arrears_tenants: i64,
 }
 
@@ -29,7 +29,7 @@ pub struct BuildingCard {
     pub total_units: i64,
     pub is_occupied: i64,
     pub vacant: i64,
-    pub collected: i64,
+    pub collected: i32,
 }
 
 pub fn portfolio_summary(
@@ -103,4 +103,3 @@ pub fn building_cards(
         })
         .collect())
 }
-

@@ -1,6 +1,8 @@
 use uuid::Uuid;
 
-use crate::{db::PgPool, error::AppError, repositories::building_repo};
+use crate::{
+    db::PgPool, entities::building::Building, error::AppError, repositories::building_repo,
+};
 
 pub fn add(pool: &PgPool, landlord_id: &Uuid, name: String) -> Result<(), AppError> {
     if name.is_empty() {
@@ -13,4 +15,8 @@ pub fn add(pool: &PgPool, landlord_id: &Uuid, name: String) -> Result<(), AppErr
 
 pub fn remove(pool: &PgPool, landlord_id: &Uuid, id: &Uuid) -> Result<(), AppError> {
     building_repo::delete(pool, landlord_id, id)
+}
+
+pub fn find_by_lanlord(pool: &PgPool, landlord_id: &Uuid) -> Result<Vec<Building>, AppError> {
+    building_repo::find_by_landlord(pool, landlord_id)
 }

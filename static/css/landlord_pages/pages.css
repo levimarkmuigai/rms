@@ -235,7 +235,7 @@ aside {
   margin: 0;
 }
 
-#open-add-unit {
+#open-add-unit, #open-assign-tenant {
   color: var(--text-muted);
   text-decoration: none;
   font-size: 0.85rem;
@@ -244,7 +244,7 @@ aside {
   border: 1px solid transparent;
 }
 
-#open-add-unit:hover {
+#open-add-unit:hover, #open-assign-tenant {
   color: var(--ink);
 }
 
@@ -257,7 +257,7 @@ aside {
   font-weight: 600;
   cursor: pointer;
   padding: 0;
-  text-decoration: underline;
+  text-decoration: none;
   transition: color 150ms ease;
 }
 
@@ -306,7 +306,7 @@ aside {
 }
 
 
-#add-building-modal, #add-unit-modal {
+#add-building-modal, #add-unit-modal, #assign-unit-modal {
   display: flex;
   background: rgba(237,232,240,0.75);
   backdrop-filter: blur(6px);
@@ -333,7 +333,7 @@ aside {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.add-building-card, .add-unit-card {
+.add-building-card, .add-unit-card, .assign-unit-card {
   display: flex;
   flex-direction: column;
   background-color: var(--light-card);
@@ -388,7 +388,7 @@ label, .label-text {
   margin-bottom: 0.25rem;
 }
 
-input[type="text"] {
+input[type="text"], select {
   background-color: var(--light-sunken);
   width: 100%;
   box-sizing: border-box;

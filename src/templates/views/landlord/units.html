@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Unit Portfolio</title>
     <link href="/static/css/landlord_pages/pages.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/landlord_pages/unit.css">
   </head>
   <body>
     <aside>
       <div class="aside-items">
-        <a href="/landlord/dashboard">profile</a>
+        <a href="/landlord">profile</a>
         <a href="/landlord/buildings">buildings</a>
         <a href="/landlord/units" class="current-page">units</a>
     </aside>
@@ -17,11 +18,13 @@
     <div class="dash-container">
       <header class="dash-header">
         <div class="header-group">
-          <a href="/landlord/dashboard" class="back-link">← back to dashboard</a>
+          <a href="/landlord" class="back-link">← back to dashboard</a>
           <h1 class="page-title">units portfolio</h1>
           <span class="date-stamp">{{units_count}}</span>
         </div>
-        <button class="header-btn" id="open-add-modal">add unit +</button>
+        <div class="building-nav">
+          {{ buildings_list }}
+        </div>
       </header>
 
       <div class="split-view">
@@ -30,14 +33,14 @@
         </div>
 
         <main class="detail-panel">
-          {{detail}}
+          {{details}}
         </main>
       </div>
     </div>
 
-    <div id="add-unit-modal" class="card-hidden">
-      <div class="add-unit-card">
-        {{ unit_form_html }}
+    <div id="assign-unit-modal" class="card-hidden">
+      <div class="assign-unit-card">
+        {{ assign_units }}
       </div>
     </div>
     <script type="module" src="../static/js/main.js"></script>

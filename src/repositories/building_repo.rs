@@ -9,7 +9,7 @@ use crate::{
 pub fn find_by_landlord(pool: &PgPool, landlord_id: &Uuid) -> Result<Vec<Building>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
-        "SELECT * FROM buildings WHERE landlord_id = $1",
+        "SELECT * FROM buildings WHERE landlord_id = $1 ORDER BY created_at ASC",
         &[landlord_id],
     )?;
 
@@ -25,7 +25,10 @@ pub fn find_by_landlord(pool: &PgPool, landlord_id: &Uuid) -> Result<Vec<Buildin
 
 pub fn find_by_id(pool: &PgPool, id: &Uuid) -> Result<Option<Building>, AppError> {
     let mut client = pool.get()?;
-    let rows = client.query("SELECT * FROM buildings WHERE id = $1", &[id])?;
+    let rows = client.query(
+        "SELECT * FROM buildings WHERE id = $1 ORDER BY created_at ASC",
+        &[id],
+    )?;
 
     Ok(rows.first().map(|r| Building {
         id: r.get("id"),
@@ -37,7 +40,7 @@ pub fn find_by_id(pool: &PgPool, id: &Uuid) -> Result<Option<Building>, AppError
 pub fn portfolio_unit_stats(
     pool: &PgPool,
     landlord_id: &Uuid,
-) -> Result<(i64, i64, i64, i64), AppError> {
+) -> Result<(i64, i64, i64, i32), AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
         "
@@ -45,7 +48,7 @@ pub fn portfolio_unit_stats(
         COUNT(u.id) AS total_units,
         COUNT(u.id) FILTER (WHERE u.status = 'occupied') AS occupied,
         COUNT(u.id) FILTER (WHERE u.status = 'vacant') AS vacant,
-        COALESCE(SUM(u.rent_amount) FILTER (WHERE u.status = 'occupied'), 0) AS expected_revenue
+        CAST(COALESCE(SUM(u.rent_amount) FILTER (WHERE u.status = 'occupied'), 0) AS INT) AS expected_revenue
         FROM units u
         JOIN buildings b on b.id = u.building_id
         WHERE b.landlord_id = $1",
@@ -57,7 +60,7 @@ pub fn portfolio_unit_stats(
         row.get::<_, i64>("total_units"),
         row.get::<_, i64>("occupied"),
         row.get::<_, i64>("vacant"),
-        row.get::<_, i64>("expected_revenue"),
+        row.get::<_, i32>("expected_revenue"),
     ))
 }
 
@@ -65,11 +68,11 @@ pub fn collected_this_month(
     pool: &PgPool,
     landlord_id: &Uuid,
     month_year: &str,
-) -> Result<i64, AppError> {
+) -> Result<i32, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
         "
-        SELECT COALESCE(SUM(p.amount), 0) AS collected
+        SELECT CAST(COALESCE(SUM(p.amount), 0) AS INT) AS collected
         FROM payments p
         JOIN units u ON u.id = p.unit_id
         JOIN buildings b on b.id = u.building_id
@@ -80,7 +83,7 @@ pub fn collected_this_month(
 
     Ok(rows
         .first()
-        .map(|r| r.get::<_, i64>("collected"))
+        .map(|r| r.get::<_, i32>("collected"))
         .unwrap_or(0))
 }
 
@@ -88,11 +91,11 @@ pub fn arrears_stats(
     pool: &PgPool,
     landlord_id: &Uuid,
     month_year: &str,
-) -> Result<(i64, i64), AppError> {
+) -> Result<(i32, i64), AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
         "
-        SELECT COALESCE(SUM(u.rent_amount), 0) AS total_arrears,
+        SELECT CAST(COALESCE(SUM(u.rent_amount), 0) AS INT) AS total_arrears,
         COUNT(DISTINCT u.tenant_id) AS tenant_count
         FROM units u
         JOIN buildings b ON b.id = u.building_id
@@ -111,7 +114,7 @@ pub fn arrears_stats(
         .ok_or_else(|| AppError::NotFound("arrears".into()))?;
 
     Ok((
-        row.get::<_, i64>("total_arrears"),
+        row.get::<_, i32>("total_arrears"),
         row.get::<_, i64>("tenant_count"),
     ))
 }
@@ -128,7 +131,7 @@ pub fn building_summeries(
         b.name,
         COUNT(u.id) AS total_units,
         COUNT(u.id) FILTER (WHERE u.status = 'occupied') AS occupied,
-        COALESCE(SUM(p.amount), 0) AS collected
+        CAST(COALESCE(SUM(p.amount), 0) AS INT) AS collected
         FROM buildings b
         LEFT JOIN units u ON u.building_id = b.id
         LEFT JOIN payments p ON p.unit_id = u.id AND p.month_year = $2
@@ -144,7 +147,7 @@ pub fn building_summeries(
             name: r.get("name"),
             total_units: r.get::<_, i64>("total_units"),
             occupied: r.get::<_, i64>("occupied"),
-            collected: r.get::<_, i64>("collected"),
+            collected: r.get::<_, i32>("collected"),
         })
         .collect())
 }

@@ -57,6 +57,27 @@ pub fn email_exists(pool: &PgPool, email: &str) -> Result<bool, AppError> {
     Ok(!rows.is_empty())
 }
 
+pub fn find_unassigned_tenants(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
+    let mut client = pool.get()?;
+
+    let role = "Tenant";
+    let rows = client.query(
+        "SELECT u.id, u.email FROM users u
+        WHERE u.role = $1
+        AND NOT EXISTS (
+            SELECT 1 FROM tenant_units tu
+            WHERE tu.tenant_id = u.id
+            AND tu.vacated_at IS NULL
+            )",
+        &[&role],
+    )?;
+
+    Ok(rows
+        .iter()
+        .map(|r| (r.get("id"), r.get("email")))
+        .collect::<Vec<(Uuid, String)>>())
+}
+
 fn row_to_user(row: &postgres::Row) -> Result<User, AppError> {
     User::from_row(
         row.get("id"),

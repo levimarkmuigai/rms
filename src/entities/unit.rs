@@ -41,9 +41,9 @@ impl fmt::Display for UnitStatus {
 }
 
 #[derive(Debug, Clone)]
-pub struct UnitPortfolioSummary {
+pub struct UnitSummaryRow {
     pub id: Uuid,
     pub number: String,
     pub status: String,
-    pub rent_amount: i64,
+    pub rent_amount: i32,
 }

@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{
     db::PgPool,
-    entities::unit::{Unit, UnitPortfolioSummary, UnitStatus},
+    entities::unit::{Unit, UnitStatus, UnitSummaryRow},
     error::AppError,
 };
 
@@ -25,11 +25,20 @@ pub fn insert(
 
 pub fn assign_tenant(pool: &PgPool, unit_id: &Uuid, user_id: &Uuid) -> Result<(), AppError> {
     let mut client = pool.get()?;
+    let mut transaction = client.transaction()?;
 
-    client.execute(
+    transaction.execute(
         "UPDATE units set tenant_id = $1, status = 'occupied' WHERE id = $2",
         &[user_id, unit_id],
     )?;
+
+    transaction.execute(
+        "INSERT INTO tenant_units (tenant_id, unit_id) VALUES($1,$2)",
+        &[user_id, unit_id],
+    )?;
+
+    transaction.commit()?;
+
     tracing::debug!(%unit_id, %user_id, "tenant assigned");
     Ok(())
 }
@@ -44,17 +53,27 @@ pub fn find_by_id(pool: &PgPool, id: &Uuid) -> Result<Option<Unit>, AppError> {
             id: r.get("id"),
             building_id: r.get("building_id"),
             unit_number: r.get("unit_number"),
-            rent_amount: r.get("rent_amount"),
+            rent_amount: r.get::<_, i32>("rent_amount"),
             status: status_str.parse().unwrap_or(UnitStatus::Vacant),
             tenant_id: r.get("tenant_id"),
         }
     }))
 }
 
-pub fn unit_portfolio_summary(
+pub fn is_occupied(pool: &PgPool, unit_id: &Uuid) -> Result<bool, AppError> {
+    let mut client = pool.get()?;
+    let rows = client.query_opt(
+        "SELECT 1 FROM tenant_units WHERE unit_id = $1 AND vacated_at IS NULL",
+        &[unit_id],
+    )?;
+
+    Ok(rows.is_some())
+}
+
+pub fn unit_summary_row(
     pool: &PgPool,
     building_id: &Uuid,
-) -> Result<Vec<UnitPortfolioSummary>, AppError> {
+) -> Result<Vec<UnitSummaryRow>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
         "SELECT
@@ -64,16 +83,17 @@ pub fn unit_portfolio_summary(
         status
         FROM units
         WHERE building_id = $1
+        ORDER BY created_at ASC
         ",
         &[&building_id],
     )?;
 
     Ok(rows
         .iter()
-        .map(|r| UnitPortfolioSummary {
+        .map(|r| UnitSummaryRow {
             id: r.get("id"),
             number: r.get("unit_number"),
-            rent_amount: r.get("rent_amount"),
+            rent_amount: r.get::<_, i32>("rent_amount"),
             status: r.get("status"),
         })
         .collect())
