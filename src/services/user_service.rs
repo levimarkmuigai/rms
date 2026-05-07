@@ -48,6 +48,10 @@ pub fn get_unassigned_tenant(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppEr
     user_repo::find_unassigned_tenants(pool)
 }
 
+pub fn get_unassigned_caretakers(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
+    user_repo::find_unassigned_caretakers(pool)
+}
+
 pub fn update(
     pool: &PgPool,
     id: &Uuid,

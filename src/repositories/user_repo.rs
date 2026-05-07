@@ -78,6 +78,26 @@ pub fn find_unassigned_tenants(pool: &PgPool) -> Result<Vec<(Uuid, String)>, App
         .collect::<Vec<(Uuid, String)>>())
 }
 
+pub fn find_unassigned_caretakers(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
+    let mut client = pool.get()?;
+    let role = "Caretaker";
+    let rows = client.query(
+        "SELECT u.id, u.email
+        FROM users u
+        WHERE role = $1
+        AND NOT EXISTS(
+            SELECT 1 FROM building_units bu
+            WHERE bu.caretaker_id = u.id
+            AND bu.released_at IS NULL
+            )",
+        &[&role],
+    )?;
+
+    Ok(rows
+        .iter()
+        .map(|r| (r.get("id"), r.get("email")))
+        .collect::<Vec<(Uuid, String)>>())
+}
 fn row_to_user(row: &postgres::Row) -> Result<User, AppError> {
     User::from_row(
         row.get("id"),
