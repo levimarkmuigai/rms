@@ -127,12 +127,12 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                 <button id=\"open-assign-tenant\"> assign unit</button>
                 </div>
                 </div>
-                <div class=\"b-stat-grid\">
-                <div class=\"b-stat-box\">
+                <div class=\"stat-grid\">
+                <div class=\"stat-box\">
                 <span class=\"stat-label\">rent amount</span>
                 <span class=\"stat-value\">{rent}</span>
                 </div>
-                <div class=\"b-stat-box\">
+                <div class=\"stat-box\">
                 <span class=\"stat-label\">vacancy status</span>
                 <span class=\"stat-value\">{status}</span>
                 </div>

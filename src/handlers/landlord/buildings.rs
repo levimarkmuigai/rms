@@ -63,12 +63,12 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
             </form>
             </div>
             </div>
-            <div class=\"b-stat-grid\">
-            <div class=\"b-stat-box\">
+            <div class=\"stat-grid\">
+            <div class=\"stat-box\">
             <span class=\"stat-label\">collected this month</span>
             <span class=\"stat-value\">{collected}</span>
             </div>
-            <div class=\"b-stat-box\">
+            <div class=\"stat-box\">
             <span class=\"stat-label\">occupied</span>
             <span class=\"stat-value\">{occupied}</span>
             <span class=\"stat-label\">vacant</span>

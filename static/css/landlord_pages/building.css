@@ -1,25 +1,4 @@
-:root {
-  --ink: #111111;
-  --text-muted: #A0A0A0;
-}
-
-#open-assign-tenant {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: color 150ms ease;
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-#open-assign-tenant:hover {
-  color: var(--ink);
-}
-
-#assign-unit-modal {
+#add-building-modal {
   display: flex;
   background: rgba(237,232,240,0.75);
   backdrop-filter: blur(6px);
@@ -34,7 +13,7 @@
   z-index: 100;
 }
 
-.assign-unit-card {
+.add-building-card {
   display: flex;
   flex-direction: column;
   background-color: var(--light-card);
@@ -47,24 +26,46 @@
   box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12), 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.building-nav {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 10px;
-}
-
-.building-tab  {
-  text-decoration: none;
+#open-add-unit {
   color: var(--text-muted);
-  transition: color 200ms ease, color 200ms ease;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 150ms ease;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.building-tab a:hover {
-  transform: scale(0.95);
+#open-add-unit:hover {
   color: var(--ink);
 }
 
-.active-building {
-  color: var(--ink);
+#add-unit-modal {
+  display: flex;
+  background: rgba(237,232,240,0.75);
+  backdrop-filter: blur(6px);
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.add-unit-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--light-card);
+  max-width: 450px;
+  width: 100%;
+  opacity: 100%;
+  padding: 16px;
+  border: 1px solid var(--light-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12), 0 2px 8px rgba(0,0,0,0.08);
 }
