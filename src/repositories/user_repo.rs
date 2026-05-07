@@ -80,13 +80,13 @@ pub fn find_unassigned_tenants(pool: &PgPool) -> Result<Vec<(Uuid, String)>, App
 
 pub fn find_unassigned_caretakers(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
     let mut client = pool.get()?;
-    let role = "Caretaker";
+    let role = "caretaker";
     let rows = client.query(
         "SELECT u.id, u.email
         FROM users u
         WHERE role = $1
         AND NOT EXISTS(
-            SELECT 1 FROM building_units bu
+            SELECT 1 FROM caretaker_buildings bu
             WHERE bu.caretaker_id = u.id
             AND bu.released_at IS NULL
             )",

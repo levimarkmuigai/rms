@@ -22,3 +22,26 @@ export const initBuildingModal = () => {
     }
   });
 };
+
+export const assignBuildingModal = () => {
+  const modalBtn = document.getElementById('open-assign-caretaker');
+  const modal = document.getElementById('assign-building-modal');
+
+  if (!modalBtn || !modal) return;
+
+  modalBtn.addEventListener('click', () => {
+    openModal(modal);
+  });
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal(modal);
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeModal(modal);
+    }
+  });
+};

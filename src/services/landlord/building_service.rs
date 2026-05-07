@@ -17,6 +17,13 @@ pub fn remove(pool: &PgPool, landlord_id: &Uuid, id: &Uuid) -> Result<(), AppErr
     building_repo::delete(pool, landlord_id, id)
 }
 
+pub fn assign(pool: &PgPool, caretaker_id: &Uuid, id: &Uuid) -> Result<(), AppError> {
+    if building_repo::is_assigned(pool, id)? {
+        return Err(AppError::BadRequest("building already assigned".into()));
+    }
+    building_repo::assign_caretaker(pool, caretaker_id, id)
+}
+
 pub fn find_by_lanlord(pool: &PgPool, landlord_id: &Uuid) -> Result<Vec<Building>, AppError> {
     building_repo::find_by_landlord(pool, landlord_id)
 }

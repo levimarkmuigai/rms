@@ -1,7 +1,6 @@
 #add-building-modal {
   display: flex;
   background: rgba(237,232,240,0.75);
-  backdrop-filter: blur(6px);
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -26,7 +25,7 @@
   box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12), 0 2px 8px rgba(0,0,0,0.08);
 }
 
-#open-add-unit {
+#open-add-unit, #open-assign-caretaker {
   color: var(--text-muted);
   text-decoration: none;
   font-size: 0.85rem;
@@ -38,14 +37,13 @@
   cursor: pointer;
 }
 
-#open-add-unit:hover {
+#open-add-unit:hover, #open-assign-caretaker:hover {
   color: var(--ink);
 }
 
-#add-unit-modal {
+#add-unit-modal, #assign-building-modal {
   display: flex;
   background: rgba(237,232,240,0.75);
-  backdrop-filter: blur(6px);
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -57,7 +55,7 @@
   z-index: 100;
 }
 
-.add-unit-card {
+.add-unit-card, .assign-building-card {
   display: flex;
   flex-direction: column;
   background-color: var(--light-card);

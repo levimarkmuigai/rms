@@ -172,3 +172,27 @@ pub fn delete(pool: &PgPool, landlord_id: &Uuid, id: &Uuid) -> Result<(), AppErr
     tracing::debug!(%id, "building deleted");
     Ok(())
 }
+
+pub fn assign_caretaker(
+    pool: &PgPool,
+    caretaker_id: &Uuid,
+    building_id: &Uuid,
+) -> Result<(), AppError> {
+    let mut client = pool.get()?;
+
+    client.execute(
+        "INSERT INTO caretaker_buildings (caretaker_id, building_id) VALUES ($1,$2)",
+        &[caretaker_id, building_id],
+    )?;
+    tracing::debug!(%caretaker_id, %building_id, "assigned");
+    Ok(())
+}
+
+pub fn is_assigned(pool: &PgPool, building_id: &Uuid) -> Result<bool, AppError> {
+    let mut client = pool.get()?;
+    let rows = client.query_opt(
+        "SELECT 1 FROM caretaker_buildings WHERE building_id = $1 AND released_at IS NULL",
+        &[building_id],
+    )?;
+    Ok(rows.is_some())
+}
