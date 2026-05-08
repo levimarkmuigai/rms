@@ -43,6 +43,25 @@ pub fn assign_tenant(pool: &PgPool, unit_id: &Uuid, user_id: &Uuid) -> Result<()
     Ok(())
 }
 
+pub fn vacate_tenant(pool: &PgPool, unit_id: &Uuid) -> Result<(), AppError> {
+    let mut client = pool.get()?;
+    let mut transaction = client.transaction()?;
+
+    transaction.execute(
+        "UPDATE units SET tenant_id = NULL, status = 'vacant' WHERE id = $1",
+        &[&unit_id],
+    )?;
+
+    transaction.execute(
+        "UPDATE tenant_units SET vacated_at = NOW() WHERE unit_id = $1 AND vacated_at IS NULL",
+        &[&unit_id],
+    )?;
+
+    transaction.commit()?;
+    tracing::debug!(%unit_id, "vacated");
+    Ok(())
+}
+
 pub fn find_by_id(pool: &PgPool, id: &Uuid) -> Result<Option<Unit>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query("SELECT * FROM units WHERE id = $1", &[id])?;

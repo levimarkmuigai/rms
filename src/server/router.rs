@@ -68,6 +68,10 @@ pub fn build(state: Arc<AppState>) -> Router {
         crate::handlers::landlord::unit::assign_unit,
     );
     routes.insert(
+        ("POST", "/landlord/unit/vacate"),
+        crate::handlers::landlord::unit::vacate,
+    );
+    routes.insert(
         ("POST", "/landlord/building/assign"),
         crate::handlers::landlord::buildings::assign,
     );

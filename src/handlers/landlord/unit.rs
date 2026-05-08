@@ -62,6 +62,17 @@ pub fn assign_unit(req: &Request, state: &Arc<AppState>) -> Result<Response, App
     Ok(Response::redirect("/landlord/units"))
 }
 
+pub fn vacate(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
+    let f = form::parse(&req.body);
+    let unit_id: Uuid = f
+        .get("unit_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("unit id not found".into()))?;
+
+    unit_service::vacate_tenant(&state.db, &unit_id)?;
+    Ok(Response::redirect("/landlord/units"))
+}
+
 pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
     let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
     let buildings = building_service::find_by_lanlord(&state.db, &sess.user_id)?;
@@ -125,6 +136,10 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                 <h2 class=\"detail-title\">{number}</h2>
                 <div class=\"detail-actions\">
                 <button id=\"open-assign-tenant\"> assign unit</button>
+                <form action=\"/landlord/unit/vacate\" method=\"POST\">
+                <input type=\"hidden\" value=\"{id}\" name=\"unit_id\">
+                <button type=\"submit\">vacate tenant</button>
+                </form>
                 </div>
                 </div>
                 <div class=\"stat-grid\">
@@ -137,6 +152,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                 <span class=\"stat-value\">{status}</span>
                 </div>
                 </div>",
+                    id = u.id,
                     number = u.number,
                     rent = utils::kes(u.rent_amount),
                     status = u.status,

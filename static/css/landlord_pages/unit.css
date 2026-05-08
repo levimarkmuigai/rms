@@ -3,20 +3,21 @@
   --text-muted: #A0A0A0;
 }
 
-#open-assign-tenant {
+#open-assign-tenant, form button {
   color: var(--text-muted);
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
-  transition: color 150ms ease;
+  transition: color 150ms ease, transform 200ms ease;
   background: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
 }
 
-#open-assign-tenant:hover {
+#open-assign-tenant:hover, form button:hover {
   color: var(--ink);
+  transform: scale(0.94);
 }
 
 #assign-unit-modal {

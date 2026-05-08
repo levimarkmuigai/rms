@@ -27,6 +27,10 @@ pub fn assign(pool: &PgPool, user_id: &Uuid, id: &Uuid) -> Result<(), AppError> 
     unit_repo::assign_tenant(pool, id, user_id)
 }
 
+pub fn vacate_tenant(pool: &PgPool, unit_id: &Uuid) -> Result<(), AppError> {
+    unit_repo::vacate_tenant(pool, unit_id)
+}
+
 pub fn unit_stats(pool: &PgPool, building_id: &Uuid) -> Result<Vec<UnitStats>, AppError> {
     let unit_stats = unit_repo::unit_summary_row(pool, building_id)?;
 
