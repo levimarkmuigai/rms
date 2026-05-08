@@ -14,3 +14,11 @@ pub struct BuildingSummaryRow {
     pub occupied: i64,
     pub collected: i32,
 }
+
+pub struct BuildingOverviewRow {
+    pub name: String,
+    pub caretaker_id: Option<Uuid>,
+    pub caretaker_name: Option<String>,
+    pub caretaker_number: Option<String>,
+    pub requests: Option<i64>,
+}

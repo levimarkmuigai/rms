@@ -380,3 +380,42 @@ input:focus {
   display: block;
   min-height: 1.2rem;
 }
+
+table {
+  width: 100%;
+}
+
+table th, table td {
+  padding: 12px 15px;
+  text-align: left;
+  font-family: inherit;
+}
+
+table th {
+  color: var(--text-muted);
+  font-weight: bold;
+}
+
+table td {
+  color: var(--ink);
+}
+
+td button {
+  background: transparent;
+  display: inline-block;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: bold;
+  font-size: 1rem;
+  border: 1px solid transparent;
+  transition: color 150ms ease-in-out, transform 200ms ease-in-out;
+}
+
+td button:hover {
+  color: var(--ink);
+  transform: scale(0.95);
+}
+
+td button:active {
+  transform: translateY(0) scale(0.85);
+}

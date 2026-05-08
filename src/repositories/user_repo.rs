@@ -98,6 +98,31 @@ pub fn find_unassigned_caretakers(pool: &PgPool) -> Result<Vec<(Uuid, String)>, 
         .map(|r| (r.get("id"), r.get("email")))
         .collect::<Vec<(Uuid, String)>>())
 }
+
+pub fn caretaker_display(
+    pool: &PgPool,
+    landlord_id: &Uuid,
+) -> Result<Vec<(Uuid, String, String)>, AppError> {
+    let mut client = pool.get()?;
+    let role = "caretaker";
+
+    let rows = client.query(
+        "SELECT c.id, c.name, c.number
+        FROM users u
+        JOIN buildings b on b.landlord_id = u.id
+        JOIN caretaker_buildings bc on bc.building_id = b.id
+        JOIN users c on c.caretaker_id = bc.caretaker_id
+        WHERE u.id = $1
+        AND c.role = $2",
+        &[landlord_id, &role],
+    )?;
+
+    Ok(rows
+        .iter()
+        .map(|r| (r.get("id"), r.get("name"), r.get("number")))
+        .collect::<Vec<(Uuid, String, String)>>())
+}
+
 fn row_to_user(row: &postgres::Row) -> Result<User, AppError> {
     User::from_row(
         row.get("id"),

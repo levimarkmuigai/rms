@@ -1,11 +1,16 @@
 use std::{collections::HashMap, sync::Arc};
 
+use uuid::Uuid;
+
 use crate::{
     entities::user::Role,
     error::AppError,
     handlers::landlord::utils,
-    server::{auth, request::Request, response::Response},
-    services::landlord::dashboard_service,
+    server::{auth, form, request::Request, response::Response},
+    services::landlord::{
+        building_service,
+        dashboard_service::{self, BuildingOverview},
+    },
     state::AppState,
     templates::engine,
 };
@@ -45,11 +50,12 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
     let month_year = current_month_year();
     let summary = dashboard_service::portfolio_summary(&state.db, &sess.user_id, &month_year)?;
-    let requests = dashboard_service::open_requests(&state.db, &sess.user_id)?;
+    let overview_data = dashboard_service::building_overview(&state.db, &sess.user_id)?;
 
     let mut ctx: HashMap<&str, String> = HashMap::new();
     ctx.insert("landlord_name", sess.name.clone());
     ctx.insert("date_label", month_label(&month_year));
+    ctx.insert("overview_rows", overview_table(overview_data));
 
     if summary.has_buildings {
         ctx.insert("collected_revenue", utils::kes(summary.collected_revenue));
@@ -77,26 +83,59 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         ctx.insert("arrears_context", "-".into());
     }
 
-    let open_rows: String = if requests.is_empty() {
-        "<div class=\"list-row\"><span class=\"col-main\">no open requests</span></div>".into()
-    } else {
-        requests
-            .iter()
-            .map(|r| {
-                format!(
-                    "<div class=\"list-row\">
-                <span class=\"col-main\">{}</span>
-                <span class=\"col-sub\">{}</span>
-                <span class=\"col-sub\">{}</span>
-                <span class=\"col-sub\">{}</span>
-                </div>",
-                    r.category, r.unit_label, r.status, r.age_label
-                )
-            })
-            .collect()
-    };
-    ctx.insert("open_requests", open_rows);
-
     tracing::info!(user_id = %sess.user_id, has_buildings = summary.has_buildings, "dashboard rendered");
     Ok(Response::html(200, engine::render(DASHBOARD_HTML, &ctx)))
+}
+
+pub fn release_caretaker(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
+    let f = form::parse(&req.body);
+
+    let caretaker_id: Uuid = f
+        .get("caretaker_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("caretaker_id not found".into()))?;
+
+    building_service::release(&state.db, &caretaker_id)?;
+
+    Ok(Response::redirect("/landlord"))
+}
+
+fn overview_table(overviews: Vec<BuildingOverview>) -> String {
+    overviews
+        .into_iter()
+        .map(|o| {
+            let caretaker_id = match o.cartaker_id {
+                None => "-".to_string(),
+                Some(id) => id.to_string(),
+            };
+            let caretaker = match o.caretaker_name {
+                None => "-".to_string(),
+                Some(name) => name,
+            };
+            let contact = match o.caretaker_number {
+                None => "-".to_string(),
+                Some(contact) => contact,
+            };
+            let requests = match o.requests {
+                None => "".to_string(),
+                Some(r) => r.to_string(),
+            };
+            format!(
+                r#"
+                    <tr>
+                    <td>{name}</td>
+                    <td>{caretaker}</td>
+                    <td>{requests}</td>
+                    <td>{contact}</td>
+                    <td>
+                    <form action="/landlord/caretaker/release" method="POST">
+                    <input type="hidden" value="{caretaker_id}" name="caretaker_id">
+                    <button type="submit">release</button>
+                    </form>
+                    </td>
+                    </tr>"#,
+                name = o.name,
+            )
+        })
+        .collect()
 }

@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{
     db::PgPool,
-    entities::building::{Building, BuildingSummaryRow},
+    entities::building::{Building, BuildingOverviewRow, BuildingSummaryRow},
     error::AppError,
 };
 
@@ -152,6 +152,44 @@ pub fn building_summeries(
         .collect())
 }
 
+pub fn buildings_overview_rows(
+    pool: &PgPool,
+    landlord_id: &Uuid,
+) -> Result<Vec<BuildingOverviewRow>, AppError> {
+    let mut client = pool.get()?;
+
+    let request_status = "resolved";
+
+    let rows = client.query(
+        "SELECT
+        b.name AS name,
+        c.id AS caretaker_id,
+        c.name AS caretaker_name,
+        c.number AS caretaker_number,
+        COUNT(DISTINCT m.id) as requests
+        FROM buildings b
+        LEFT JOIN caretaker_buildings cb ON cb.building_id = b.id AND cb.released_at IS NULL
+        LEFT JOIN users c on c.id = cb.caretaker_id
+        LEFT JOIN units u ON u.building_id = b.id
+        LEFT JOIN maintenance_requests m ON m.unit_id = u.id AND m.status != $2
+        WHERE b.landlord_id = $1
+        GROUP BY b.id, b.name, c.id,c.name,c.email
+        ORDER BY b.created_at ASC",
+        &[landlord_id, &request_status],
+    )?;
+
+    Ok(rows
+        .iter()
+        .map(|r| BuildingOverviewRow {
+            name: r.get("name"),
+            caretaker_id: r.get("caretaker_id"),
+            caretaker_name: r.get("caretaker_name"),
+            caretaker_number: r.get("caretaker_number"),
+            requests: r.get("requests"),
+        })
+        .collect())
+}
+
 pub fn insert(pool: &PgPool, landlord_id: &Uuid, id: &Uuid, name: &str) -> Result<(), AppError> {
     let mut client = pool.get()?;
     client.execute(
@@ -188,11 +226,25 @@ pub fn assign_caretaker(
     Ok(())
 }
 
-pub fn is_assigned(pool: &PgPool, building_id: &Uuid) -> Result<bool, AppError> {
+pub fn caretaker_is_assigned(pool: &PgPool, building_id: &Uuid) -> Result<bool, AppError> {
     let mut client = pool.get()?;
     let rows = client.query_opt(
         "SELECT 1 FROM caretaker_buildings WHERE building_id = $1 AND released_at IS NULL",
         &[building_id],
     )?;
     Ok(rows.is_some())
+}
+
+pub fn release_caretaker(pool: &PgPool, caretaker_id: &Uuid) -> Result<(), AppError> {
+    let mut client = pool.get()?;
+    client.execute(
+        "UPDATE caretaker_buildings 
+        SET released_at = NOW() 
+        WHERE caretaker_id = $1 
+        AND released_at IS NULL",
+        &[caretaker_id],
+    )?;
+
+    tracing::debug!(%caretaker_id, "unassigned");
+    Ok(())
 }

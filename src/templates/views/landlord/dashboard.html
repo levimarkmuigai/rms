@@ -43,10 +43,24 @@
       <div class="triage-section">
          <div class="triage-panel">
           <div class="panel-header">
-            <h2 class="panel-title">open requests</h2>
-            <a href="/templates/maintenance.html" class="panel-link">view all</a>
+            <h2 class="panel-title">buildings overview</h2>
           </div>
-          {{ open_requests }}
+          <table>
+            <thead>
+              <tr>
+                <th>building</th>
+                <th>caretaker</th>
+                <th>requests</th>
+                <th>contact</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {{ overview_rows }}
+            </tbody>
+
+          </table>
           </div>
         </div>
       </div>

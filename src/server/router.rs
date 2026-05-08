@@ -71,5 +71,9 @@ pub fn build(state: Arc<AppState>) -> Router {
         ("POST", "/landlord/building/assign"),
         crate::handlers::landlord::buildings::assign,
     );
+    routes.insert(
+        ("POST", "/landlord/caretaker/release"),
+        crate::handlers::landlord::dashboard::release_caretaker,
+    );
     Router { routes, state }
 }

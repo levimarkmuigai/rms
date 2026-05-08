@@ -1,10 +1,6 @@
 use uuid::Uuid;
 
-use crate::{
-    db::PgPool,
-    error::AppError,
-    repositories::{building_repo, maintenance_repo},
-};
+use crate::{db::PgPool, error::AppError, repositories::building_repo};
 
 pub struct PortfolioSummary {
     pub has_buildings: bool,
@@ -16,13 +12,6 @@ pub struct PortfolioSummary {
     pub arrears_tenants: i64,
 }
 
-pub struct OpenRequest {
-    pub category: String,
-    pub unit_label: String,
-    pub status: String,
-    pub age_label: String,
-}
-
 pub struct BuildingCard {
     pub id: Uuid,
     pub name: String,
@@ -30,6 +19,14 @@ pub struct BuildingCard {
     pub is_occupied: i64,
     pub vacant: i64,
     pub collected: i32,
+}
+
+pub struct BuildingOverview {
+    pub name: String,
+    pub cartaker_id: Option<Uuid>,
+    pub caretaker_name: Option<String>,
+    pub caretaker_number: Option<String>,
+    pub requests: Option<i64>,
 }
 
 pub fn portfolio_summary(
@@ -67,23 +64,6 @@ pub fn portfolio_summary(
     })
 }
 
-pub fn open_requests(pool: &PgPool, landlord_id: &Uuid) -> Result<Vec<OpenRequest>, AppError> {
-    let open_requests = maintenance_repo::open_for_landlord_with_label(pool, landlord_id)?;
-    Ok(open_requests
-        .into_iter()
-        .map(|op| OpenRequest {
-            category: op.category,
-            unit_label: op.unit_label,
-            status: op.status,
-            age_label: match op.age_days {
-                0 => "today".into(),
-                1 => "1 day".into(),
-                d => format!("{d} days"),
-            },
-        })
-        .collect())
-}
-
 pub fn building_cards(
     pool: &PgPool,
     landlord_id: &Uuid,
@@ -100,6 +80,24 @@ pub fn building_cards(
             is_occupied: bc.occupied,
             vacant: bc.total_units - bc.occupied,
             collected: bc.collected,
+        })
+        .collect())
+}
+
+pub fn building_overview(
+    pool: &PgPool,
+    landlord_id: &Uuid,
+) -> Result<Vec<BuildingOverview>, AppError> {
+    let overview = building_repo::buildings_overview_rows(pool, landlord_id)?;
+
+    Ok(overview
+        .into_iter()
+        .map(|o| BuildingOverview {
+            name: o.name,
+            cartaker_id: o.caretaker_id,
+            caretaker_name: o.caretaker_name,
+            caretaker_number: o.caretaker_number,
+            requests: o.requests,
         })
         .collect())
 }
