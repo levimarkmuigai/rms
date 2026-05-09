@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Caretaker DashBboard</title>
+    <link href="/static/css/caretaker.css" rel="stylesheet">
+  </head>
+  <body>
+    <aside>
+      <div class="aside-item">
+        <button id="profile-btn">{{ caretaker name }}</button>
+      </div>
+    </aside>
+
+    <div class="dash-container">
+      <header>
+        <h1>overview</h1>
+      </header>
+
+      <div class="overview-row">
+        <div class="overview-card">
+          <span class="card-value">{{ pending_count }}</span>
+          <span class="card-label">pending</span>
+        </div>
+
+        <div class="overview-card">
+          <span class="card-value">{{ in-progress_count }}</span>
+          <span class="card-label">in progress</span>
+        </div>
+
+        <div class="overview-card">
+          <span class="card-value">{{ resolved_count }}</span>
+          <span class="card-label">resolved</span>
+        </div>
+      </div>
+
+      <div class="request-section">
+
+        <div class="request-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">REQUESTS</h2>
+          </div>
+
+          <div class="request-card">
+            <div class="request-view">
+              <div class="request-card-body">
+                 <span class="request-desc">{{ request_description }}</span>
+                <span class="req-unit">{{ unit }}</span>
+                <span class="req-timestamp">{{ timestamp }}</span>
+              </div>
+              <form action="/caretaker/request/start" method="POST">
+                <input type="hidden" name="request_id" value="{request_id}">
+                <button type="submit">start</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="request-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">IN PROGRESS</h2>
+          </div>
+
+          <div class="request-card">
+            <div class="request-view">
+              <div class="request-card-body">
+                <span class="request-desc">{{ request_description }}</span>
+                <span class="req-unit">{{ unit }}</span>
+                <span class="req-timestamp">{{ timestamp }}</span>
+              </div>
+              <form action="/caretaker/request/resolve" method="POST">
+                <input type="hidden" name="request_id" value="{id}">
+                <button type="submit">resolve</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <script type="module" src="../static/js/main.js"></script>
+  </body>
+</html>

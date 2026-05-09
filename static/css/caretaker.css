@@ -1,259 +1,349 @@
+:root {
+  --light-base: #F3F3F3;
+  --light-main: #F0F0F0;
+  --light-card: #FFFFFF;
+  --light-sunken:  #E8E8E8;
+  --light-border: #E0E0E0;
+  --ink: #111111;
+  --text-muted: #A0A0A0;
+  --shadow-color: 170, 170, 170;
+}
+
+* {
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
 body {
-  background-color: #212529;
-  color: #fff;
-  font-family: "Press Start 2P", cursive;
+  background-color: var(--light-base);
+  display: flex;
+  color: var(--ink);
+  justify-content: center;
+  flex-direction: row;
+  height: 100vh;
   margin: 0;
-  padding: 40px 20px;
+  padding: 20px;
+  gap: 20px;
+  line-height: 1.5;
+}
+
+aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--light-main);
+  border: 1px solid var(--light-border);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
+  width: 160px;
+  padding: 1.5rem;
+}
+
+.aside-item button {
+  background-color: transparent;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.8rem;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  border: 1px solid transparent;
+  transition: color 200ms ease-in-out, transform 250ms ease-in-out;
+  cursor: pointer;
+}
+
+.aside-item button:hover {
+  transform: scale(0.95);
+  color: var(--ink);
+}
+
+.aside-item button:active {
+  transform: scale(0.95);
+}
+
+.dash-container {
+  background-color: var(--light-main);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 2rem;
+  border: 1px solid var(--light-border);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
+  overflow-y: auto;
+}
+
+header {
   display: flex;
   justify-content: center;
-  line-height: 1.6;
-}
-
-.container {
-  max-width: 800px;
-  width: 100%;
-}
-
-.stats-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #f4f1ea;
-  color: #000;
-  padding: 20px;
-  border: 4px solid #000;
-  box-shadow: 8px 8px 0px #000;
-  margin-bottom: 40px;
-  font-size: 10px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--light-border);
 }
 
-.header-btn {
-  background: #eee;
-  color: #000;
-  border: 4px solid #000;
-  padding: 10px;
-  font-family: "Press Start 2p", cursive;
-  font-size: 10px;
-  cursor: pointer;
-  box-shadow: 4px 4px 0px #000;
-  width: 160px;
-  height: 40px;
+header h1 {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.header-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px opx #000;
-}
-
-.header-btn.profile {
-  background: #0000ff;
-}
-
-.header-btn.vacancies {
-  background: #20c997;
-}
-.header-btn.urgent {
-  background: #ff0040;
-}
-
-.header-btn.tasks {
-  background: #ffcc00;
-}
-
-table {
+.overview-row {
+  display: flex;
+  gap: 20px;
   width: 100%;
-  border-collapse: collapse;
-  background: #f4f1ea;
-  color: #000;
-  margin-bottom: 20px;
-  border: 4px solid #000;
 }
 
-table th,
-table td {
-  border: 4px solid #000;
-  padding: 12px;
-  text-align: left;
-  font-size: 8px;
+.overview-card {
+  background-color: var(--light-card);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid var(--light-border);
+  border-radius: 24px;
+  transition: transform 200ms ease-out;
 }
 
-table th {
-  background: #eee;
+.overview-card:hover {
+  transform: translateY(-2px);
+}
+
+.card-value {
+  margin-bottom: 4px;
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.card-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1rem;
   text-transform: uppercase;
 }
 
-.admin-grid {
+.request-section {
   display: flex;
-  flex-direction: row;
-  gap: 30px;
-  align-items: stretch;
+  gap: 20px;
   width: 100%;
+  margin-top: 2rem;
 }
 
-.notice-table {
-    table-layout: fixed;
-    margin-bottom: 0;
-    border-width: 2px;
-}
-
-.notice-table th, .notice-table td {
-    padding: 8px 4px;
-    border-width: 2px;
-    font-size: 7px;
-    text-align: center;
-}
-
-.notice-table th:nth-child(1) { width: 30%; }
-.notice-table th:nth-child(2) { width: 15%; }
-.notice-table th:nth-child(3) { width: 20%; }
-.notice-table th:nth-child(4) { width: 35%; }
-
-
-
-.notice-btn {
+.request-panel {
+  flex: 1;
+  border: 1px solid var(--light-border);
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background-color: var(--light-card);
 }
 
-.notice-btn form {
-  margin: 0;
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
 }
 
-.small-btn {
-  width: 80px;
-  height: 30px;
-  padding: 5px;
-  font-size: 8px;
-}
-
-.workstation {
-  margin-top: 20px;
-}
-
-h2 {
-  font-size: 14px;
-  margin: 40px 0 20px 0;
-  color: #20c997;
+.panel-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
-.action-card,
-.management-section,
-.profile-panel {
-  background: #f4f1ea;
-  color: #000;
-  border: 4px solid #000;
-  box-shadow: 6px 6px 0px #000;
-  padding: 20px;
-  margin-bottom: 25px;
+.request-card {
+  border: 1px solid var(--light-border);
+  width: 100%;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: var(--light-sunken);
 }
 
-.management-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
 
-.action-card {
+.request-view {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
-.card-info p {
-  margin: 5px 0;
-  font-size: 12px;
-  font-weight: bold;
+.request-desc {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.4;
 }
 
-.card-info small {
-  font-size: 8px;
-  color: #555;
-  display: block;
-  margin-top: 5px;
+.request-unit {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.management-section h3,
-.profile-panel h3 {
-  font-size: 12px;
-  margin: 0 0 20px 0;
-  padding-bottom: 10px;
-  border-bottom: 4px solid #000;
+.req-timestamp {
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border: 2px solid #000;
-  font-size: 8px;
-  background: #eee;
-  margin-bottom: 5px;
+.request-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.grid-field {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 20px;
+.request-view button {
+  background: transparent;
+  border: 1px solid var(--light-border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease-in, transform 200ms ease-out;
 }
 
-.field {
-  margin-bottom: 20px;
+.request-view button:hover {
+  background: var(--ink);
+  color: var(--light-card);
+  border-color: var(--ink);
 }
 
-.field label {
-  display: block;
-  font-size: 8px;
-  margin-bottom: 10px;
-  color: #000;
+#profile-modal {
+  display: flex;
+  background: rgba(237,232,240,0.75);
+  backdrop-filter: blur(6px);
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
 }
 
-input,
-select {
+.card-hidden {
+  opacity: 0;
+  transform: translateY(32px) scale(0.95);
+  pointer-events: none;
+}
+
+.card-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--light-card);
+  max-width: 450px;
   width: 100%;
-  padding: 12px;
-  border: 4px solid #000;
-  font-family: "Press Start 2P", cursive;
-  font-size: 10px;
+  opacity: 100%;
+  padding: 16px;
+  border: 1px solid var(--light-border);
+  border-radius: 20px;
+  box-shadow:
+  0 8px 32px rgba(var(--shadow-color), 0.12),
+  0 2px 8px rgba(0,0,0,0.08);
+}
+
+.form {
+  margin: 0 auto;
+  text-transform: lowercase;
+}
+
+.form-group {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.15rem 0;
+}
+
+.form-group legend {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid #eaeaea;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.input-row, .input-container {
+  flex: 1;
+}
+
+label, .label-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+input[type="text"],
+input[type="password"] {
+  background-color: var(--light-sunken);
+  width: 100%;
   box-sizing: border-box;
-  background-color: #fff;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 6px;
+  font-size: 16px;
+  transition: transform 300ms ease-in-out;
+}
+
+input:active {
+  transform: scale(0.95);
+}
+
+input:focus {
   outline: none;
 }
 
-button {
-  font-family: "Press Start 2P", cursive;
-  border: 4px solid #000;
-  cursor: pointer;
-  padding: 12px;
-  font-size: 8px;
-  text-transform: uppercase;
-  transition: transform 0.1s;
-}
-
-button:active {
-  transform: translate(2px, 2px);
-}
-
-.fix-btn {
-  background: #20c997;
-}
-.btn-blue {
-  background: #3498db;
-}
-.btn-red {
-  background: #e74c3c;
-}
-.btn-profile,
-.submit-btn {
+.form-button {
+  background-color: var(--light-sunken);
   width: 100%;
-  background: #000;
-  color: #fff;
+  padding:12px;
+  cursor: pointer;
+  transition: transform 300ms ease-out;
+  font-weight: 500;
+  text-transform: uppercase;
+  border-radius: 10px;
+  border: 1px solid var(--light-border);
+  transition: transform 300ms ease-out;
 }
 
-.red-text {
-  color: #ff0000;
+.form-button:active {
+  transform: scale(0.95);
 }
-.hidden {
-  display: none !important;
+
+.form-button:hover {
+  transform: scale(0.95);
 }
