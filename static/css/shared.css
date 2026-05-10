@@ -1,0 +1,127 @@
+.modal-overlay {
+  display: flex;
+  background: rgba(237, 232, 240, 0.75);
+  backdrop-filter: blur(6px);
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.card-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px) scale(0.97);
+}
+
+.card-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.modal-card {
+  background: var(--light-card);
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  border: 1px solid var(--light-border);
+  border-radius: 20px;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow:
+    0 8px 32px rgba(var(--shadow-color), 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.modal-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.form-group {
+  border: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.input-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.input-row,
+.input-container {
+  flex: 1;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+label,
+.label-text {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+input[type="text"],
+select {
+  background: var(--light-sunken);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px solid var(--light-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 200ms ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus {
+  border-color: var(--ink);
+}
+
+.form-button {
+  width: 100%;
+  padding: 10px;
+  background: var(--ink);
+  color: var(--light-card);
+  border: none;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 200ms ease;
+}
+
+.form-button:hover  { opacity: 0.85; }
+.form-button:active { opacity: 0.70; }
+
+.error-message {
+  color: #dc3545;
+  font-size: 11px;
+  margin-top: 3px;
+  display: block;
+  min-height: 1rem;
+}

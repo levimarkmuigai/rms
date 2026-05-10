@@ -1,8 +1,8 @@
-import { setErrorState } from "../ui/formState.js";
+import { setErrorState } from "../../ui/formState.js";
 
-export function validateName(nameInput, errorSpanId) {
-  if (nameInput.value.trim().length === 0) {
-    setErrorState(nameInput, errorSpanId, "This field cannot be empty.");
+export function validateText(textInput, errorSpanId) {
+  if (textInput.value.trim().length === 0) {
+    setErrorState(textInput, errorSpanId, "This field cannot be empty.");
     return false;
   }
   return true;
@@ -18,9 +18,9 @@ export function validateEmail(emailInput, errorSpanId) {
   return true;
 }
 
-export function validateRole(roleSelect, errorSpanId) {
-  if (roleSelect.selectedIndex === 0) {
-    setErrorState(roleSelect, errorSpanId, "You must select a role.");
+export function validateSelect(select, errorSpanId) {
+  if (select.selectedIndex === 0) {
+    setErrorState(select, errorSpanId, "You must select a field.");
     return false;
   }
   return true;

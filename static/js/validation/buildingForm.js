@@ -1,6 +1,4 @@
-import {
-  validateName
-} from './userDetails.js';
+import { validateText } from "./utils/validator.js";
 
 export const buildingValidation = () => {
   const nameInput = document.getElementById('add-building-name');
@@ -8,10 +6,10 @@ export const buildingValidation = () => {
 
   if (!buildingForm || !nameInput) return;
 
-  nameInput.addEventListener('change', () => validateName(nameInput));
+  nameInput.addEventListener('change', () => validateText(nameInput, "name-error"));
 
   buildingForm.addEventListener('submit', (event) => {
-    const isNameValid = validateName(nameInput, "name-error");
+    const isNameValid = validateText(nameInput, "name-error");
     if (!isNameValid) event.preventDefault();
   });
 };

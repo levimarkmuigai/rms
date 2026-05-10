@@ -1,6 +1,5 @@
-import {
-  validateName
-} from './userDetails.js';
+import { validateText } from "./utils/validator.js";
+
 
 export const unitFormValidation = () => {
   const numberInput = document.getElementById('unit-number');
@@ -8,12 +7,12 @@ export const unitFormValidation = () => {
   const form = document.getElementById("add-unit-form");
   if (!numberInput || !rentInput || !form) return;
 
-  numberInput.addEventListener('change', () => validateName(nameInput, "unit-number-error"));
-  rentInput.addEventListener(('change'), () => validateName(rentInput, "rent-amount-error"));
+  numberInput.addEventListener('change', () => validateText(nameInput, "unit-number-error"));
+  rentInput.addEventListener(('change'), () => validateText(rentInput, "rent-amount-error"));
 
   form.addEventListener('submit', (event) => {
-    const isNumberInput = validateName(numberInput, "unit-number-error");
-    const isRentInput = validateName(rentInput, "rent-amount-error");
+    const isNumberInput = validateText(numberInput, "unit-number-error");
+    const isRentInput = validateText(rentInput, "rent-amount-error");
     if (!isNumberInput || !isRentInput) return event.preventDefault();
   })
 };
