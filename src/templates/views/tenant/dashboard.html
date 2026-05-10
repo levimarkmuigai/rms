@@ -7,46 +7,47 @@
     <link href="/static/css/tenant.css" rel="stylesheet">
   </head>
   <body>
+    <aside>
+      <div class="aside-item">
+        <button id="profile-btn">{{ tenant_name }}</button>
+      </div>
+    </aside>
+
     <div class="dash">
       <header>
-        <h1 class="unit-name">{unit_name}</h1>
-        <span class="apartment-name">{apartment_name}</span>
-        <span class="rent-amount">{rent_amount}</span>
+        <h1 class="unit-name">{{ unit_name }}</h1>
+        <span class="apartment-name">{{ apartment_name }}</span>
+        <span class="rent-amount">{{ rent_amount }}</span>
       </header>
 
       <div class="recent-activity">
         <h2 class="section-header">recent activity</h2>
 
-        <div class="activity-container">
-          <h3>maintenance</h3>
-          <div class="activity-card">
-            <span class="activity-desc">{desc}</span>
-            <span class="activity-timestamp">{timestamp}</span>
-            <span class="activity-status">{status}</span>
+        <div class="activity-row">
+          <div class="activity-container">
+            <h3>maintenance</h3>
+            {{ request_card }}
           </div>
-        </div>
 
-        <div class="activity-container">
-          <h3>payments</h3>
-          <div class="activity-card">
-            <span class="activity-desc">{month_year}</span>
-            <span class="activity-amount">{amount}</span>
-            <span class="activity-status">{status}</span>
+          <div class="activity-container">
+            <h3>payments</h3>
+            {{ payment_card }}
           </div>
         </div>
       </div>
 
       <div class="action-container">
         <h2 class="section-header">actions</h2>
+        <div class="btn-row">
+          <div class="action-btn">
+            <button>report issue</button>
+            <span>raise a request</span>
+          </div>
 
-        <div class="action-btn">
-          <button>report issue</button>
-          <span>raise a request</span>
+          <div class="action-btn">
+            <button>pay rent</button>
+            <span>submit payment</span>
         </div>
-
-        <div class="action-btn">
-          <button>pay rent</button>
-          <span>submit payment</span>
         </div>
       </div>
     </div>

@@ -117,3 +117,24 @@ pub fn unit_summary_row(
         })
         .collect())
 }
+
+pub fn tenant_header_row(
+    pool: &PgPool,
+    tenant_id: &Uuid,
+) -> Result<(String, String, i32), AppError> {
+    let mut client = pool.get()?;
+    let rows = client.query_one(
+        "SELECT u.unit_number, b.name AS building_name, u.rent_amount
+        FROM units u
+        JOIN buildings b ON b.id = u.building_id
+        JOIN tenant_units tu ON tu.unit_id = u.id
+        WHERE tu.tenant_id = $1 AND vacated_at IS NULL",
+        &[tenant_id],
+    )?;
+
+    Ok((
+        rows.get("unit_number"),
+        rows.get("building_name"),
+        rows.get::<_, i32>("rent_amount"),
+    ))
+}

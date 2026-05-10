@@ -87,7 +87,7 @@ impl fmt::Display for Role {
         let s = match self {
             Role::Landlord => "landlord",
             Role::Caretaker => "caretaker",
-            Role::Tenant => "Tenant",
+            Role::Tenant => "tenant",
         };
 
         write!(f, "{s}")

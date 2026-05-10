@@ -7,9 +7,9 @@ use uuid::Uuid;
 pub struct MaintenanceRequest {
     pub id: Uuid,
     pub unit_id: Uuid,
-    pub category: String,
+    pub tenant_id: Uuid,
     pub status: RequestStatus,
-    pub age_days: i32,
+    pub desc: String,
 }
 
 #[derive(Debug, Clone)]
@@ -58,4 +58,13 @@ pub struct RequestPanelRow {
     pub unit: String,
     pub status: String,
     pub created_at: SystemTime,
+}
+
+#[derive(Debug, Clone)]
+pub struct ViewRequest {
+    pub id: Uuid,
+    pub unit_id: Uuid,
+    pub description: String,
+    pub status: String,
+    pub submitted_at: SystemTime,
 }

@@ -1,6 +1,10 @@
 use uuid::Uuid;
 
-use crate::{db::PgPool, entities::maintenance::RequestPanelRow, error::AppError};
+use crate::{
+    db::PgPool,
+    entities::maintenance::{RequestPanelRow, ViewRequest},
+    error::AppError,
+};
 
 pub fn dash_overview_row(pool: &PgPool, caretaker_id: &Uuid) -> Result<(i64, i64, i64), AppError> {
     let mut client = pool.get()?;
@@ -80,4 +84,28 @@ pub fn inprogress_resolved(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
 
     tracing::debug!(%id, "set to resolved");
     Ok(())
+}
+
+pub fn request_view_row(pool: &PgPool, tenant_id: &Uuid) -> Result<Vec<ViewRequest>, AppError> {
+    let mut client = pool.get()?;
+
+    let rows = client.query(
+        "SELECT r.id, r.unit_id, r.description, r.created_at, r.status
+        FROM maintenance_requests r
+        JOIN units u ON u.id = r.unit_id
+        JOIN tenant_units tu ON tu.unit_id = u.id
+        WHERE tu.tenant_id = $1 AND vacated_at IS NULL",
+        &[tenant_id],
+    )?;
+
+    Ok(rows
+        .into_iter()
+        .map(|r| ViewRequest {
+            id: r.get("id"),
+            unit_id: r.get("unit_id"),
+            description: r.get("description"),
+            submitted_at: r.get("created_at"),
+            status: r.get("status"),
+        })
+        .collect::<Vec<ViewRequest>>())
 }

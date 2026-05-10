@@ -60,7 +60,7 @@ pub fn email_exists(pool: &PgPool, email: &str) -> Result<bool, AppError> {
 pub fn find_unassigned_tenants(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
     let mut client = pool.get()?;
 
-    let role = "Tenant";
+    let role = "tenant";
     let rows = client.query(
         "SELECT u.id, u.email FROM users u
         WHERE u.role = $1
