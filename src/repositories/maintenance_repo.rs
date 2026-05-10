@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::{db::PgPool, error::AppError};
+use crate::{db::PgPool, entities::maintenance::RequestPanelRow, error::AppError};
 
 pub fn dash_overview_row(pool: &PgPool, caretaker_id: &Uuid) -> Result<(i64, i64, i64), AppError> {
     let mut client = pool.get()?;
@@ -23,4 +23,35 @@ pub fn dash_overview_row(pool: &PgPool, caretaker_id: &Uuid) -> Result<(i64, i64
         row.get::<_, i64>("inprogress_count"),
         row.get::<_, i64>("resolved_count"),
     ))
+}
+
+pub fn find_panel_row(
+    pool: &PgPool,
+    caretaker_id: &Uuid,
+) -> Result<Vec<RequestPanelRow>, AppError> {
+    let mut client = pool.get()?;
+    let rows = client.query(
+        "SELECT 
+        r.id, r.description, u.unit_number as unit_number, r.created_at, r.status
+        FROM maintenance_requests r
+        JOIN units u ON u.id = r.unit_id
+        JOIN buildings b ON b.id = u.building_id
+        JOIN caretaker_buildings cb On cb.building_id = b.id
+        WHERE cb.caretaker_id = $1
+        AND cb.released_at IS NULL
+        AND r.status != 'resolved'
+        ORDER BY r.created_at ASC",
+        &[&caretaker_id],
+    )?;
+
+    Ok(rows
+        .iter()
+        .map(|r| RequestPanelRow {
+            id: r.get("id"),
+            desc: r.get("description"),
+            unit: r.get("unit_number"),
+            status: r.get("status"),
+            created_at: r.get("created_at"),
+        })
+        .collect())
 }

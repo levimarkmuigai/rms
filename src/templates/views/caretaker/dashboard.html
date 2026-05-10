@@ -44,15 +44,7 @@
 
           <div class="request-card">
             <div class="request-view">
-              <div class="request-card-body">
-                 <span class="request-desc">{{ request_description }}</span>
-                <span class="req-unit">{{ unit }}</span>
-                <span class="req-timestamp">{{ timestamp }}</span>
-              </div>
-              <form action="/caretaker/request/start" method="POST">
-                <input type="hidden" name="request_id" value="{request_id}">
-                <button type="submit">start</button>
-              </form>
+                {{ pending_card }}
             </div>
           </div>
         </div>
@@ -64,15 +56,7 @@
 
           <div class="request-card">
             <div class="request-view">
-              <div class="request-card-body">
-                <span class="request-desc">{{ request_description }}</span>
-                <span class="req-unit">{{ unit }}</span>
-                <span class="req-timestamp">{{ timestamp }}</span>
-              </div>
-              <form action="/caretaker/request/resolve" method="POST">
-                <input type="hidden" name="request_id" value="{id}">
-                <button type="submit">resolve</button>
-              </form>
+              {{ inprogress_card }}
             </div>
           </div>
         </div>

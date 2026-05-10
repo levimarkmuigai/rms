@@ -1,5 +1,5 @@
 use core::fmt;
-use std::str::FromStr;
+use std::{str::FromStr, time::SystemTime};
 
 use uuid::Uuid;
 
@@ -23,7 +23,7 @@ impl fmt::Display for RequestStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             RequestStatus::Pending => "pending",
-            RequestStatus::InProgress => "in progress",
+            RequestStatus::InProgress => "in_progress",
             RequestStatus::Resolved => "resolved",
         };
         write!(f, "{s}")
@@ -49,4 +49,13 @@ pub struct RequestWithLabel {
     pub unit_label: String,
     pub status: String,
     pub age_days: i32,
+}
+
+#[derive(Debug, Clone)]
+pub struct RequestPanelRow {
+    pub id: Uuid,
+    pub desc: String,
+    pub unit: String,
+    pub status: String,
+    pub created_at: SystemTime,
 }
