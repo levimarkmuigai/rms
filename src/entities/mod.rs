@@ -1,3 +1,4 @@
+pub mod activity;
 pub mod building;
 pub mod maintenance;
 pub mod payment;

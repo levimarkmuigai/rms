@@ -59,6 +59,7 @@ pub fn login_submit(req: &Request, state: &Arc<AppState>) -> Result<Response, Ap
         Role::Landlord => "/landlord",
         Role::Caretaker => "/caretaker",
         Role::Tenant => "/tenant",
+        Role::Admin => "/admin",
     };
 
     let cookie = format!("session={token}; HttpOnly; Path=/");

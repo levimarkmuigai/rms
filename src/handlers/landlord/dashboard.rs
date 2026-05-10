@@ -6,6 +6,7 @@ use crate::{
     entities::user::Role,
     error::AppError,
     handlers::landlord::utils,
+    repositories::activity_repo,
     server::{auth, form, request::Request, response::Response},
     services::landlord::{
         building_service,
@@ -89,6 +90,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
 
 pub fn release_caretaker(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
     let f = form::parse(&req.body);
+    let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
 
     let caretaker_id: Uuid = f
         .get("caretaker_id")
@@ -96,6 +98,8 @@ pub fn release_caretaker(req: &Request, state: &Arc<AppState>) -> Result<Respons
         .ok_or(AppError::BadRequest("caretaker_id not found".into()))?;
 
     building_service::release(&state.db, &caretaker_id)?;
+
+    activity_repo::insert(&state.db, &sess.user_id, "released caretaker")?;
 
     Ok(Response::redirect("/landlord"))
 }

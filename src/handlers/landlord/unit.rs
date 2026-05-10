@@ -6,6 +6,7 @@ use crate::{
     entities::{building::Building, user::Role},
     error::AppError,
     handlers::landlord::utils,
+    repositories::activity_repo,
     server::{auth, form, request::Request, response::Response},
     services::{
         landlord::{
@@ -64,12 +65,15 @@ pub fn assign_unit(req: &Request, state: &Arc<AppState>) -> Result<Response, App
 
 pub fn vacate(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
     let f = form::parse(&req.body);
+    let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
     let unit_id: Uuid = f
         .get("unit_id")
         .and_then(|v| v.parse().ok())
         .ok_or(AppError::BadRequest("unit id not found".into()))?;
 
     unit_service::vacate_tenant(&state.db, &unit_id)?;
+
+    activity_repo::insert(&state.db, &sess.user_id, "vacated tenant")?;
     Ok(Response::redirect("/landlord/units"))
 }
 

@@ -6,6 +6,7 @@ use crate::{
     entities::user::Role,
     error::AppError,
     handlers::landlord::utils,
+    repositories::activity_repo,
     server::{auth, form, request::Request, response::Response},
     services::{
         landlord::{building_service, dashboard_service},
@@ -136,6 +137,8 @@ pub fn delete(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError
         .ok_or_else(|| AppError::BadRequest("invalid building_id".into()))?;
 
     building_service::remove(&state.db, &sess.user_id, &building_id)?;
+
+    activity_repo::insert(&state.db, &sess.user_id, "removed a building")?;
     tracing::info!(user_id = %sess.user_id, %building_id, "building deleted");
 
     Ok(Response::redirect("/buildings"))

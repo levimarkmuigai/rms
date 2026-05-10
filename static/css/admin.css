@@ -1,0 +1,133 @@
+:root {
+  --light-base:    #F3F3F3;
+  --light-main:    #F0F0F0;
+  --light-card:    #FFFFFF;
+  --light-sunken:  #E8E8E8;
+  --light-border:  #E0E0E0;
+  --ink:           #111111;
+  --text-muted:    #A0A0A0;
+  --shadow-color:  170, 170, 170;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+body {
+  background-color: var(--light-base);
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+.dash {
+  background-color: var(--light-main);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 900px;
+  padding: 2rem;
+  border: 1px solid var(--light-border);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
+  overflow-y: auto;
+}
+
+header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--light-border);
+}
+
+.wordmark {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.stat {
+  background: var(--light-card);
+  border: 1px solid var(--light-border);
+  border-radius: 16px;
+  padding: .85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-val {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+
+.section-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: .75rem;
+}
+
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.log-table th {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid var(--light-border);
+}
+
+.log-table td {
+  font-size: 12px;
+  padding: .65rem .75rem;
+  border-bottom: .5px solid var(--light-border);
+}
+
+.log-table tr:last-child td {
+  border-bottom: none;
+}
+
+.log-table tr:hover td {
+  background: var(--light-sunken);
+}
+
+.email {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.timestamp {
+  color: var(--text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}

@@ -68,6 +68,7 @@ pub enum Role {
     Tenant,
     Caretaker,
     Landlord,
+    Admin,
 }
 
 impl FromStr for Role {
@@ -77,6 +78,7 @@ impl FromStr for Role {
             "landlord" => Ok(Role::Landlord),
             "caretaker" => Ok(Role::Caretaker),
             "tenant" => Ok(Role::Tenant),
+            "admin" => Ok(Role::Admin),
             _ => Err(()),
         }
     }
@@ -88,6 +90,7 @@ impl fmt::Display for Role {
             Role::Landlord => "landlord",
             Role::Caretaker => "caretaker",
             Role::Tenant => "tenant",
+            Role::Admin => "admin",
         };
 
         write!(f, "{s}")
@@ -153,6 +156,12 @@ impl TryFrom<String> for Password {
 
         Ok(Self(hash))
     }
+}
+
+pub struct RoleCount {
+    pub landlords: i64,
+    pub tenants: i64,
+    pub caretakers: i64,
 }
 
 #[cfg(test)]

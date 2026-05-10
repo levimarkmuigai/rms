@@ -24,6 +24,7 @@ pub fn update_profile(req: &Request, state: &Arc<AppState>) -> Result<Response, 
         Role::Landlord => "/landlord",
         Role::Caretaker => "/caretaker",
         Role::Tenant => "/tenant",
+        Role::Admin => "/admin",
     };
 
     Ok(Response::redirect(redirect))

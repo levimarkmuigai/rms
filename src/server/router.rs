@@ -94,5 +94,7 @@ pub fn build(state: Arc<AppState>) -> Router {
     );
 
     routes.insert(("GET", "/tenant"), crate::handlers::tenant::dashboard::show);
+
+    routes.insert(("GET", "/admin"), crate::handlers::admin::dashboard::show);
     Router { routes, state }
 }

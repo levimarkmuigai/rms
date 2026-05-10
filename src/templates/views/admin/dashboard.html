@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin</title>
+    <link href="/static/css/admin.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="dash">
+      <header>
+        <h1 class="wordmark">RMS — Admin</h1>
+      </header>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-val">{{ landlord_count }}</span>
+          <span class="stat-label">landlords</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">{{ caretaker_count }}</span>
+          <span class="stat-label">caretakers</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">{{ tenant_count }}</span>
+          <span class="stat-label">tenants</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">{{ log_count }}</span>
+          <span class="stat-label">log entries</span>
+        </div>
+      </div>
+
+      <h2 class="section-label">activity log</h2>
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>user</th>
+            <th>action</th>
+            <th>when</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ log_rows }}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

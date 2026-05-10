@@ -1,6 +1,10 @@
 use uuid::Uuid;
 
-use crate::{db::PgPool, entities::user::User, error::AppError};
+use crate::{
+    db::PgPool,
+    entities::user::{RoleCount, User},
+    error::AppError,
+};
 
 pub fn insert(pool: &PgPool, user: &User) -> Result<(), AppError> {
     let mut client = pool.get()?;
@@ -97,6 +101,23 @@ pub fn find_unassigned_caretakers(pool: &PgPool) -> Result<Vec<(Uuid, String)>, 
         .iter()
         .map(|r| (r.get("id"), r.get("email")))
         .collect::<Vec<(Uuid, String)>>())
+}
+
+pub fn role_counts(pool: &PgPool) -> Result<RoleCount, AppError> {
+    let mut client = pool.get()?;
+    let row = client.query_one(
+        "SELECT
+            COUNT(*) FILTER (WHERE role = 'landlord')  AS landlords,
+            COUNT(*) FILTER (WHERE role = 'caretaker') AS caretakers,
+            COUNT(*) FILTER (WHERE role = 'tenant')    AS tenants
+        FROM users",
+        &[],
+    )?;
+    Ok(RoleCount {
+        landlords: row.get::<_, i64>("landlords"),
+        caretakers: row.get::<_, i64>("caretakers"),
+        tenants: row.get::<_, i64>("tenants"),
+    })
 }
 
 pub fn caretaker_display(

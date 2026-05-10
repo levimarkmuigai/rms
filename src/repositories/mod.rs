@@ -1,3 +1,4 @@
+pub mod activity_repo;
 pub mod building_repo;
 pub mod maintenance_repo;
 pub mod payment_repo;
