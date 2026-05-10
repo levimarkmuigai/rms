@@ -30,3 +30,11 @@ pub fn request_panel(pool: &PgPool, id: &Uuid) -> Result<Vec<PanelRequests>, App
         })
         .collect())
 }
+
+pub fn to_inprogress(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+    maintenance_repo::pending_inprogress(pool, id)
+}
+
+pub fn to_resolved(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+    maintenance_repo::inprogress_resolved(pool, id)
+}

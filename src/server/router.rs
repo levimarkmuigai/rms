@@ -84,5 +84,13 @@ pub fn build(state: Arc<AppState>) -> Router {
         ("GET", "/caretaker"),
         crate::handlers::caretaker::dashboard::show,
     );
+    routes.insert(
+        ("POST", "/caretaker/request/start"),
+        crate::handlers::caretaker::dashboard::inprogress,
+    );
+    routes.insert(
+        ("POST", "/caretaker/request/resolve"),
+        crate::handlers::caretaker::dashboard::resolve,
+    );
     Router { routes, state }
 }

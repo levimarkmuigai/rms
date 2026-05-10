@@ -55,3 +55,29 @@ pub fn find_panel_row(
         })
         .collect())
 }
+
+pub fn pending_inprogress(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+    let mut client = pool.get()?;
+
+    client.execute(
+        "UPDATE maintenance_requests SET status = 'in_progress'
+        WHERE id = $1",
+        &[&id],
+    )?;
+
+    tracing::debug!(%id, "set to in progress");
+    Ok(())
+}
+
+pub fn inprogress_resolved(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+    let mut client = pool.get()?;
+
+    client.execute(
+        "UPDATE maintenance_requests SET status = 'resolved'
+        WHERE id = $1",
+        &[id],
+    )?;
+
+    tracing::debug!(%id, "set to resolved");
+    Ok(())
+}

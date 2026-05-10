@@ -1,9 +1,11 @@
 use std::{collections::HashMap, sync::Arc, time::SystemTime};
 
+use uuid::Uuid;
+
 use crate::{
     entities::user::Role,
     error::AppError,
-    server::{auth, request::Request, response::Response},
+    server::{auth, form, request::Request, response::Response},
     services::caretaker::dashboard_services::{self, PanelRequests},
     state::AppState,
     templates::engine,
@@ -26,6 +28,27 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     ctx.insert("pending_card", pending);
     ctx.insert("inprogress_card", inprogress);
     Ok(Response::html(200, engine::render(DASH_HTML, &ctx)))
+}
+
+pub fn inprogress(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
+    let f = form::parse(&req.body);
+    let id: Uuid = f
+        .get("request_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("request_id missing".into()))?;
+    dashboard_services::to_inprogress(&state.db, &id)?;
+    Ok(Response::redirect("/caretaker"))
+}
+
+pub fn resolve(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
+    let f = form::parse(&req.body);
+    let id: Uuid = f
+        .get("request_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("request_id missing".into()))?;
+
+    dashboard_services::to_resolved(&state.db, &id)?;
+    Ok(Response::redirect("/caretaker"))
 }
 
 fn request_panel(r: Vec<PanelRequests>) -> (String, String) {
