@@ -53,7 +53,7 @@ pub fn resolve(req: &Request, state: &Arc<AppState>) -> Result<Response, AppErro
 
 fn request_panel(r: Vec<PanelRequests>) -> (String, String) {
     let pending_requests: Vec<_> = r.iter().filter(|r| r.status == "pending").collect();
-    let inprogress_requests: Vec<_> = r.iter().filter(|r| r.status == "in_progess").collect();
+    let inprogress_requests: Vec<_> = r.iter().filter(|r| r.status == "in_progress").collect();
 
     let pending_html: String = pending_requests
         .into_iter()

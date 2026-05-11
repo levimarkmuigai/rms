@@ -6,6 +6,16 @@ use crate::{
     error::AppError,
 };
 
+pub fn insert(pool: &PgPool, unit_id: &Uuid, tenant_id: &Uuid, desc: &str) -> Result<(), AppError> {
+    let mut client = pool.get()?;
+    client.execute(
+        "INSERT INTO maintenance_requests (id, unit_id, reported_by, status, description)
+        VALUES ($1, $2, $3, 'pending', $4)",
+        &[&Uuid::new_v4(), unit_id, tenant_id, &desc],
+    )?;
+    Ok(())
+}
+
 pub fn dash_overview_row(pool: &PgPool, caretaker_id: &Uuid) -> Result<(i64, i64, i64), AppError> {
     let mut client = pool.get()?;
 

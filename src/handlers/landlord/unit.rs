@@ -142,7 +142,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                 <button id=\"open-assign-tenant\"> assign unit</button>
                 <form action=\"/landlord/unit/vacate\" method=\"POST\">
                 <input type=\"hidden\" value=\"{id}\" name=\"unit_id\">
-                <button type=\"submit\">vacate tenant</button>
+                <button type=\"submit\" class=\"danger-btn\">vacate tenant</button>
                 </form>
                 </div>
                 </div>

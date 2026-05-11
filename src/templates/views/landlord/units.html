@@ -6,6 +6,7 @@
     <title>Unit Portfolio</title>
     <link href="/static/css/landlord_pages/shared.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/landlord_pages/unit.css">
+    <link rel="stylesheet" href="/static/css/shared.css">
   </head>
   <body>
     <aside>
@@ -13,6 +14,7 @@
         <a href="/landlord">profile</a>
         <a href="/landlord/buildings">buildings</a>
         <a href="/landlord/units" class="current-page">units</a>
+      </div>
     </aside>
 
     <div class="dash-container">
@@ -38,8 +40,8 @@
       </div>
     </div>
 
-    <div id="assign-unit-modal" class="card-hidden">
-      <div class="assign-unit-card">
+    <div id="assign-unit-modal" class="modal-overlay card-hidden">
+      <div class="modal-card">
         {{ assign_units }}
       </div>
     </div>

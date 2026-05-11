@@ -1,10 +1,10 @@
 import { closeModal, openModal } from "./utils/modal.js";
 
 export const initAuthModals = () => {
-  const signupBtn = document.getElementById('signup');
+  const signupBtn = document.getElementById('signup-btn');
   const signupId = document.getElementById('signup-modal');
 
-  const loginBtn = document.getElementById('login');
+  const loginBtn = document.getElementById('login-btn');
   const loginId = document.getElementById('login-modal');
 
   if (!signupBtn || !loginBtn) return;

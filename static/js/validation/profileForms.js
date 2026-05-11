@@ -1,3 +1,5 @@
+import { validateEmail, validateNumber, validatePassword, validateText } from "./utils/validator.js";
+
 export const profileValidation = () => {
   const firstNameInput = document.getElementById('update-fname');
   const lastNameInput = document.getElementById('update-lname');
@@ -6,14 +8,13 @@ export const profileValidation = () => {
   const passwordInput = document.getElementById('update-password');
   const profileForm = document.getElementById('profile-form');
 
-  // all or nothing — if any element is missing, the form isn't on this page
   if (!firstNameInput || !lastNameInput || !emailInput || !numberInput || !passwordInput || !profileForm) return;
 
-  firstNameInput.addEventListener('change', () => validateText(firstNameInput, 'update-fname-error'));
-  lastNameInput.addEventListener('change', () => validateText(lastNameInput, 'update-lname-error'));
-  emailInput.addEventListener('change', () => validateEmail(emailInput, 'update-email-error'));
-  numberInput.addEventListener('change', () => validateNumber(numberInput, 'update-number-error'));
-  passwordInput.addEventListener('change', () => validatePassword(passwordInput, 'update-password-error'));
+  firstNameInput.addEventListener('mouseout', () => validateText(firstNameInput, 'update-fname-error'));
+  lastNameInput.addEventListener('mouseout', () => validateText(lastNameInput, 'update-lname-error'));
+  emailInput.addEventListener('mouseout', () => validateEmail(emailInput, 'update-email-error'));
+  numberInput.addEventListener('mouseout', () => validateNumber(numberInput, 'update-number-error'));
+  passwordInput.addEventListener('mouseout', () => validatePassword(passwordInput, 'update-password-error'));
 
   profileForm.addEventListener('submit', (event) => {
     const isFirstNameValid = validateText(firstNameInput, 'update-fname-error');

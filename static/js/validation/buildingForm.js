@@ -6,7 +6,7 @@ export const buildingValidation = () => {
 
   if (!buildingForm || !nameInput) return;
 
-  nameInput.addEventListener('change', () => validateText(nameInput, "name-error"));
+  nameInput.addEventListener('mouseout', () => validateText(nameInput, "name-error"));
 
   buildingForm.addEventListener('submit', (event) => {
     const isNameValid = validateText(nameInput, "name-error");

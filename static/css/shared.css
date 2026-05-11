@@ -1,3 +1,15 @@
+:root {
+  --light-base: #F3F3F3;
+  --light-main: #F0F0F0;
+  --light-card: #FFFFFF;
+  --light-surface: #F3F3F3;
+  --light-sunken:  #E8E8E8;
+  --light-border: #E0E0E0;
+  --ink: #111111;
+  --text-muted: #A0A0A0;
+  --shadow-color: 170, 170, 170;
+}
+
 .modal-overlay {
   display: flex;
   background: rgba(237, 232, 240, 0.75);
@@ -94,7 +106,6 @@ select {
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus,
 select:focus {
   border-color: var(--ink);
 }

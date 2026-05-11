@@ -1,4 +1,7 @@
-export const RequestModal = () => {
+import { openModal, closeModal } from "./utils/modal.js";
+
+
+export const requestModal = () => {
   const modalBtn = document.getElementById('report-btn');
   const requestModal = document.getElementById('request-modal');
 

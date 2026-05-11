@@ -116,7 +116,6 @@ h2 {
 
 h3 {
   font-size: 10px;
-  font-weight: 500;
   color: var(--text-muted);
   font-weight: 400;
   text-transform: uppercase;
@@ -127,7 +126,6 @@ h3 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   gap: 20px;
   padding: 20px;
   margin-bottom: 0.85rem;
@@ -138,6 +136,7 @@ h3 {
   display: flex;
   flex-direction: row;
   gap: 20px;
+  width: 100%;
 }
 
 .activity-container {
@@ -234,98 +233,3 @@ h3 {
   color: var(--text-muted);
 }
 
-#request-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(237, 232, 240, 0.75);
-  backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-  cursor: pointer;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.card-hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(16px) scale(0.97);
-}
-
-.card-visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0) scale(1);
-}
-
-.request-card {
-  background: var(--light-card);
-  width: 100%;
-  max-width: 400px;
-  padding: 24px;
-  border: 1px solid var(--light-border);
-  border-radius: 20px;
-  cursor: default;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-title {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.input-container {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-label {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-input[type="text"] {
-  background: var(--light-sunken);
-  width: 100%;
-  box-sizing: border-box;
-  padding: 9px 12px;
-  border: 1px solid var(--light-border);
-  border-radius: 8px;
-  font-size: 13px;
-  font-family: inherit;
-  outline: none;
-  transition: border-color 200ms ease;
-}
-
-input[type="text"]:focus {
-  border-color: var(--ink);
-}
-
-.form-button {
-  width: 100%;
-  padding: 10px;
-  background: var(--ink);
-  color: var(--light-card);
-  border: none;
-  border-radius: 20px;
-  font-size: 11px;
-  font-family: inherit;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: opacity 200ms ease;
-}
-
-.form-button:hover   { opacity: 0.85; }
-.form-button:active  { opacity: 0.7;  }

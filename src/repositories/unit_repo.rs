@@ -79,6 +79,12 @@ pub fn find_by_id(pool: &PgPool, id: &Uuid) -> Result<Option<Unit>, AppError> {
     }))
 }
 
+pub fn find_by_tenant(pool: &PgPool, tenant_id: &Uuid) -> Result<Option<Uuid>, AppError> {
+    let mut client = pool.get()?;
+    let row = client.query_opt("SELECT id FROM units WHERE tenant_id = $1", &[tenant_id])?;
+    Ok(row.map(|r| r.get("id")))
+}
+
 pub fn is_occupied(pool: &PgPool, unit_id: &Uuid) -> Result<bool, AppError> {
     let mut client = pool.get()?;
     let rows = client.query_opt(

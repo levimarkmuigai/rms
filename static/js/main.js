@@ -6,6 +6,8 @@ import { buildingValidation } from "./validation/buildingForm.js";
 import { profileValidation } from "./validation/profileForms.js";
 import { addUnitModal, assignUnitModal } from "./ui/unitModalState.js";
 import { unitFormValidation } from "./validation/unitForm.js";
+import { requestModal } from "./ui/tenantModalState.js";
+
 
 initAuthModals();
 initBuildingModal();
@@ -13,6 +15,7 @@ initProfileModal();
 addUnitModal();
 assignUnitModal();
 assignBuildingModal();
+requestModal();
 
 authValidation();
 profileValidation();

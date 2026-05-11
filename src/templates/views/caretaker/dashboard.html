@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Caretaker DashBboard</title>
     <link href="/static/css/caretaker.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/shared.css">
   </head>
   <body>
     <aside>
@@ -63,6 +64,50 @@
       </div>
       </div>
     </div>
+
+    
+    <div id="profile-modal" class="modal-overlay card-hidden">
+      <div class="modal-card">
+        <form action="/update_profile" method="POST" id="profile-form">
+          <p class="modal-title">personal details</p>
+          <div class="input-row">
+            <div class="input-container">
+              <label for="update-fname">first name</label>
+              <input type="text" id="update-fname" name="first-name">
+              <span id="update-fname-error" class="error-message"></span>
+            </div>
+            <div class="input-container">
+              <label for="update-lname">last name</label>
+              <input type="text" id="update-lname" name="last-name">
+              <span id="update-lname-error" class="error-message"></span>
+            </div>
+          </div>
+
+          <p class="modal-title">contacts</p>
+          <div class="input-row">
+          <div class="input-container">
+            <label for="update-email">email</label>
+            <input type="text" id="update-email" name="email">
+            <span id="update-email-error" class="error-message"></span>
+          </div>
+         <div class="input-container">
+          <label for="update-number">number</label>
+          <input type="text" id="update-number" name="number" placeholder="07XXXXXXXX">
+          <span id="update-number-error" class="error-message"></span>
+        </div>
+      </div>
+
+      <p class="modal-title">credentials</p>
+      <div class="input-container">
+        <label for="update-password">password</label>
+        <input type="password" id="update-password" name="password">
+        <span id="update-password-error" class="error-message"></span>
+      </div>
+
+      <button type="submit" class="form-button">update account</button>
+    </form>
+  </div>
+</div>
 
     <script type="module" src="../static/js/main.js"></script>
   </body>

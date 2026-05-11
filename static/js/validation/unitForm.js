@@ -7,8 +7,8 @@ export const unitFormValidation = () => {
   const form = document.getElementById("add-unit-form");
   if (!numberInput || !rentInput || !form) return;
 
-  numberInput.addEventListener('change', () => validateText(nameInput, "unit-number-error"));
-  rentInput.addEventListener(('change'), () => validateText(rentInput, "rent-amount-error"));
+  numberInput.addEventListener('mouseout', () => validateText(nameInput, "unit-number-error"));
+  rentInput.addEventListener(('mouseout'), () => validateText(rentInput, "rent-amount-error"));
 
   form.addEventListener('submit', (event) => {
     const isNumberInput = validateText(numberInput, "unit-number-error");

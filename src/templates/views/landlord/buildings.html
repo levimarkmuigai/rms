@@ -6,6 +6,7 @@
     <title>Property Portfolio</title>
     <link href="/static/css/landlord_pages/shared.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/landlord_pages/building.css">
+    <link rel="stylesheet" href="/static/css/shared.css">
   </head>
   <body>
     <aside>
@@ -37,23 +38,24 @@
       </div>
     </div>
 
-    <div id="add-building-modal" class="card-hidden">
-      <div class="add-building-card">
+    <div id="add-building-modal" class="modal-overlay card-hidden">
+      <div class="modal-card">
         {{ building_form_html }}
       </div>
     </div>
 
-    <div id="add-unit-modal" class="card-hidden">
-      <div class="add-unit-card">
+    <div id="add-unit-modal" class="modal-overlay card-hidden">
+      <div class="modal-card" onclick="event.stopPropagation()">
         {{ unit_form_html }}
       </div>
     </div>
 
-    <div id="assign-building-modal" class="card-hidden">
-      <div class="assign-building-card">
+    <div id="assign-building-modal" class="modal-overlay card-hidden">
+      <div class="modal-card" onclick="event.stopPropagation()">
         {{ assign_form }}
       </div>
     </div>
-    <script type="module" src="../static/js/main.js"></script>
+
+    <script type="module" src="/static/js/main.js"></script>
   </body>
 </html>

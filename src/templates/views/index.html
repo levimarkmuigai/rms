@@ -1,115 +1,96 @@
 <!DOCTYPE html>
-<html>
-<head lang="en">
+<html lang="en">
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/index.css"/>
-</head>
-<body>
-  <div class="main">
-    <div class="introduction">
-      <h1>Welcome to RMS</h1>
-      <h3>
-        The smart way to manage your building.
-        A modern workspace for modern living.
-        Whether you own the property, manage the day to day,
-        or call it home, RMS keeps everyone on the same page.
-      </h3>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RMS</title>
+    <link href="/static/css/shared.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="main">
+      <div class="introduction">
+        <h1>RMS</h1>
+        <p>the smart way to manage your building.</p>
+      </div>
+      <div class="button-group">
+        <button id="signup-btn">sign up</button>
+        <button id="login-btn">login</button>
+      </div>
     </div>
-    <div class="button-group">
-      <button id="signup">Sign up</button>
-      <button id="login">Login</button>
-    </div>
-  </div>
 
-  <div id="signup-modal" class="card-hidden">
-    <div class="signup-card">
-      <form action="/signup" method="POST" id="signup-form">
-        <fieldset class="form-group">
-          <legend>Personal Details</legend>
+    <div id="signup-modal" class="modal-overlay card-hidden">
+      <div class="modal-card">
+        <form action="/signup" method="POST" id="signup-form">
+          <p class="modal-title">personal details</p>
           <div class="input-row">
             <div class="input-container">
-              <label for="first-name">First Name</label>
+              <label for="first-name">first name</label>
               <input type="text" id="first-name" name="first-name">
-
               <span id="fname-error" class="error-message"></span>
             </div>
             <div class="input-container">
-              <label for="last-name">Last Name</label>
+              <label for="last-name">last name</label>
               <input type="text" id="last-name" name="last-name">
-
               <span id="lname-error" class="error-message"></span>
             </div>
           </div>
-        </fieldset>
-        <fieldset class="form-group">
-          <legend>Contacts</legend>
+
+          <p class="modal-title">contacts</p>
           <div class="input-row">
             <div class="input-container">
-              <label for="email">Email</label>
+              <label for="email">email</label>
               <input type="text" id="email" name="email">
-
               <span id="email-error" class="error-message"></span>
             </div>
             <div class="input-container">
-              <label for="number">Number</label>
+              <label for="number">number</label>
               <input type="text" id="number" name="number" placeholder="07XXXXXXXX">
-
-              <span class="error-message" id="number-error"></span>
+              <span id="number-error" class="error-message"></span>
             </div>
           </div>
-        </fieldset>
-        <fieldset class="form-group">
-          <legend>Role</legend>
+
+          <p class="modal-title">role</p>
           <div class="input-container">
-            <label for="role">User Role</label>
+            <label for="role">user role</label>
             <select id="role" name="role">
-              <option value="" disabled selected>Select your role ...</option>
-              <option value="tenant">Tenant</option>
-              <option value="caretaker">Caretaker</option>
-              <option value="landlord">Landlord</option>
-              <option value="admin">Admin</option>
+              <option value="" disabled selected>select role</option>
+              <option value="tenant">tenant</option>
+              <option value="caretaker">caretaker</option>
+              <option value="landlord">landlord</option>
             </select>
-
-            <span class="error-message" id="role-error"></span>
+            <span id="role-error" class="error-message"></span>
           </div>
-        </fieldset>
-        <fieldset class="form-group">
-          <legend>Credentials</legend>
+
+          <p class="modal-title">credentials</p>
           <div class="input-container">
-            <label for="signup-password">Password</label>
-            <input type="password" id="signup-password" name="password">
-
-            <span class="error-message" id="password-error"></span>
+            <label for="signup-password">password</label>
+            <input type="text" id="signup-password" name="password">
+            <span id="password-error" class="error-message"></span>
           </div>
-        </fieldset>
-        <button type="submit" class="form-button">CREATE Account</button>
-      </form>
+
+          <button type="submit" class="form-button">create account</button>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <div id="login-modal" class="card-hidden">
-    <div class="login-card">
-      <form action="/login" method="POST">
-        <fieldset class="form-group">
-          <legend>Credentials</legend>
+    <div id="login-modal" class="modal-overlay card-hidden">
+      <div class="modal-card">
+        <form action="/login" method="POST">
+          <p class="modal-title">credentials</p>
           <div class="input-container">
-            <label for="login-email">Email Address</label>
+            <label for="login-email">email</label>
             <input type="text" id="login-email" name="email">
           </div>
           <div class="input-container">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" name="password">
+            <label for="login-password">password</label>
+            <input type="text" id="login-password" name="password">
           </div>
-        </fieldset>
-        <button type="submit" class="form-button">Login</button>
-      </form>
+          <button type="submit" class="form-button">login</button>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <script type="module" src="/static/js/main.js"></script>
-</body>
+    <script type="module" src="/static/js/main.js"></script>
+  </body>
 </html>
-
