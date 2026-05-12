@@ -23,6 +23,8 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
 
     let request_html = request_activity(requests);
     let payments_html = payment_activity(payments);
+    let payment_form_html = payment_form();
+
     let mut ctx = HashMap::new();
     ctx.insert("tenant_name", sess.name);
     ctx.insert("unit_name", header_data.0);
@@ -31,6 +33,8 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
 
     ctx.insert("request_card", request_html);
     ctx.insert("payment_card", payments_html);
+
+    ctx.insert("payment_form", payment_form_html);
     Ok(Response::html(200, engine::render(DASH_HTML, &ctx)))
 }
 
@@ -101,5 +105,49 @@ fn time_ago(t: SystemTime) -> String {
         (h, 0) => format!("{} hours ago", h),
         (_, 1) => "yesterday".into(),
         (_, h) => format!("{} days ago", h),
+    }
+}
+
+fn payment_form() -> String {
+    let month_year = chrono::Utc::now().format("%Y-%m").to_string();
+    let current_month = format_month_year(month_year);
+    format!(
+        r#"
+     <form action="/tenant/payment/initiate" method="POST">
+     <input type="hidden" name="month_year" value="{current_month}">
+     <p class="modal-title">initiate payment</p>
+     <div class="input-container">
+     <label for="phone">phone</label>
+     <input type="text" id="phone" name="phone">
+     <span id="phone-error" class="error-message"></span>
+     </div>
+     <button type="submit" class="form-button">initiate</button> 
+     </form>
+        "#
+    )
+}
+
+fn format_month_year(s: String) -> String {
+    let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    let parts: Vec<&str> = s.split('-').collect();
+    match (parts.first(), parts.get(1)) {
+        (Some(y), Some(m)) => {
+            let idx: usize = m.parse::<usize>().unwrap_or(1).saturating_sub(1);
+            format!("{} {y}", months.get(idx).unwrap_or(&""))
+        }
+        _ => s.to_string(),
     }
 }

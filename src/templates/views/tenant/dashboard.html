@@ -43,7 +43,7 @@
             <span>raise a request</span>
           </div>
           <div class="action-btn">
-            <button>pay rent</button>
+            <button id="pay-btn">pay rent</button>
             <span>submit payment</span>
           </div>
         </div>
@@ -61,6 +61,12 @@
           </div>
           <button type="submit" class="form-button">submit</button> 
         </form>
+      </div>
+    </div>
+
+    <div class="modal-overlay card-hidden" id="payment-modal">
+      <div class="modal-card">
+        {{ payment_form }}
       </div>
     </div>
 

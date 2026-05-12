@@ -46,3 +46,26 @@ export const RentModal = () => {
     }
   });
 };
+
+export const paymentModal = () => {
+  let modalBtn = document.getElementById('pay-btn');
+  let modal = document.getElementById('payment-modal');
+
+  if (!modalBtn || !modal) return;
+
+  modalBtn.addEventListener('click', () => {
+    openModal(modal);
+  });
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal(modal);
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeModal(modal)
+    }
+  });
+};

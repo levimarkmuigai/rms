@@ -23,8 +23,11 @@ pub fn initiate(req: &Request, state: &Arc<AppState>) -> Result<Response, AppErr
         .cloned()
         .ok_or(AppError::BadRequest("missing phone".into()))?;
 
-    let unit = unit_repo::find_by_id(&state.db, &sess.user_id)?
+    let unit_id = unit_repo::find_by_tenant(&state.db, &sess.user_id)?
         .ok_or(AppError::BadRequest("unit missing".into()))?;
+
+    let unit = unit_repo::find_by_id(&state.db, &unit_id)?
+        .ok_or(AppError::BadRequest("unit row missing".into()))?;
 
     let checkout_request_id =
         mpesa_services::stk_push(&state.cfg, &phone, unit.rent_amount, &unit.id.to_string())?;
