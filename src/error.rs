@@ -22,4 +22,7 @@ pub enum AppError {
 
     #[error("password: {0}")]
     Password(#[from] crate::entities::user::PasswordError),
+
+    #[error("internal: {0}")]
+    Internal(String),
 }

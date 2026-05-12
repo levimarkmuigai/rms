@@ -1,5 +1,6 @@
 use std::env;
 
+#[derive(Clone, Debug)]
 pub struct Config {
     pub addr: String,
     pub database_url: String,
@@ -7,6 +8,7 @@ pub struct Config {
     pub mpesa_secret_key: String,
     pub mpesa_shortcode: String,
     pub mpesa_passkey: String,
+    pub mpesa_callback: String,
 }
 
 impl Default for Config {
@@ -19,6 +21,7 @@ impl Default for Config {
             mpesa_secret_key: env::var("MPESA_SECRET_KEY").expect("MPESA_SECRET_KEY must be set"),
             mpesa_shortcode: env::var("MPESA_SHORTCODE").expect("MPESA_SHORTCODE must be set"),
             mpesa_passkey: env::var("MPESA_PASSKEY").expect("MPESA_PASSKEY must be set"),
+            mpesa_callback: env::var("MPESA_CALLBACK_URL").expect("MPESA_CALLBACK_URL"),
         }
     }
 }
