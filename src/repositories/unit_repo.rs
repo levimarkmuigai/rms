@@ -85,6 +85,20 @@ pub fn find_by_tenant(pool: &PgPool, tenant_id: &Uuid) -> Result<Option<Uuid>, A
     Ok(row.map(|r| r.get("id")))
 }
 
+pub fn payment_details(pool: &PgPool, tenant_id: &Uuid) -> Result<(Uuid, i32), AppError> {
+    let mut client = pool.get()?;
+
+    let rows = client.query_one(
+        "SELECT unit_id, rent_amount
+        FROM units u
+        JOIN tenant_units tu ON tu.unit_id = u.id
+        WHERE tu.tenant_id = $1",
+        &[tenant_id],
+    )?;
+
+    Ok((rows.get("unit_id"), rows.get::<_, i32>("rent_amount")))
+}
+
 pub fn is_occupied(pool: &PgPool, unit_id: &Uuid) -> Result<bool, AppError> {
     let mut client = pool.get()?;
     let rows = client.query_opt(

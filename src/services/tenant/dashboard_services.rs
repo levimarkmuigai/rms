@@ -19,6 +19,7 @@ pub struct RequestActivity {
 pub struct PaymentActivity {
     pub month_year: String,
     pub amount: i32,
+    pub status: String,
 }
 
 pub fn header_data(pool: &PgPool, id: &Uuid) -> Result<(String, String, i32), AppError> {
@@ -48,6 +49,7 @@ pub fn payment_activity(pool: &PgPool, id: &Uuid) -> Result<Vec<PaymentActivity>
         .map(|p| PaymentActivity {
             month_year: p.month_year,
             amount: p.amount,
+            status: p.status,
         })
         .collect::<Vec<PaymentActivity>>())
 }

@@ -1,12 +1,9 @@
 use std::{collections::HashMap, sync::Arc, time::SystemTime};
 
-use uuid::Uuid;
-
 use crate::{
     entities::user::Role,
     error::AppError,
-    repositories::{maintenance_repo, unit_repo},
-    server::{auth, form, request::Request, response::Response},
+    server::{auth, request::Request, response::Response},
     services::tenant::dashboard_services::{self, PaymentActivity, RequestActivity},
     state::AppState,
     templates::engine,
@@ -38,24 +35,6 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     Ok(Response::html(200, engine::render(DASH_HTML, &ctx)))
 }
 
-pub fn submit(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
-    let sess = auth::require_role(req, &state.sessions, Role::Tenant)?;
-    let f = form::parse(&req.body);
-
-    let unit_id: Uuid = unit_repo::find_by_tenant(&state.db, &sess.user_id)?
-        .ok_or(AppError::BadRequest("no unit assigned".into()))?;
-
-    let desc = f
-        .get("description")
-        .filter(|v| !v.trim().is_empty())
-        .cloned()
-        .ok_or(AppError::BadRequest("description is required".into()))?;
-
-    maintenance_repo::insert(&state.db, &unit_id, &sess.user_id, &desc)?;
-
-    Ok(Response::redirect("/tenant"))
-}
-
 fn request_activity(r: Vec<RequestActivity>) -> String {
     r.into_iter()
         .map(|r| {
@@ -83,10 +62,12 @@ fn payment_activity(p: Vec<PaymentActivity>) -> String {
          <div class="activity-card">
          <span class="activity-desc">{timestamp}</span>
          <span class="activity-amount">{amount}</span>
+         <span class="activity-status">{status}</span>
          </div>
         "#,
                 timestamp = p.month_year,
                 amount = p.amount,
+                status = p.status,
             )
         })
         .collect()
