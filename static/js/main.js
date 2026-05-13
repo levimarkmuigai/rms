@@ -7,6 +7,8 @@ import { profileValidation } from "./validation/profileForms.js";
 import { addUnitModal, assignUnitModal } from "./ui/unitModalState.js";
 import { unitFormValidation } from "./validation/unitForm.js";
 import { paymentModal, requestModal } from "./ui/tenantModalState.js";
+import { requestFormValidation } from "./validation/requestForm.js";
+import { paymentFormValidation } from "./validation/paymentForm.js";
 
 
 initAuthModals();
@@ -22,3 +24,5 @@ authValidation();
 profileValidation();
 buildingValidation();
 unitFormValidation();
+requestFormValidation();
+paymentFormValidation();

@@ -52,11 +52,11 @@
 
     <div id="request-modal" class="modal-overlay card-hidden">
       <div class="modal-card">
-        <form action="/tenant/request/submit" method="POST">
+        <form id="request-form" action="/tenant/request/submit" method="POST">
           <p class="modal-title">report issue</p>
           <div class="input-container">
             <label for="desc">description</label>
-            <input type="text" id="descrption" name="description">
+            <input type="text" id="description" name="description">
             <span id="desc-error" class="error-message"></span>
           </div>
           <button type="submit" class="form-button">submit</button> 

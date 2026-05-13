@@ -113,7 +113,7 @@ fn payment_form() -> String {
     let current_month = format_month_year(month_year);
     format!(
         r#"
-     <form action="/tenant/payment/initiate" method="POST">
+     <form id="payment-form" action="/tenant/payment/initiate" method="POST">
      <input type="hidden" name="month_year" value="{current_month}">
      <p class="modal-title">initiate payment</p>
      <div class="input-container">
