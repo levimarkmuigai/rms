@@ -18,11 +18,11 @@ use crate::{
 
 const DASHBOARD_HTML: &str = include_str!("../../templates/views/landlord/dashboard.html");
 
-fn current_month_year() -> String {
+fn current_year_month() -> String {
     chrono::Utc::now().format("%Y-%m").to_string()
 }
 
-fn month_label(month_year: &str) -> String {
+fn month_label(year_month: &str) -> String {
     let months = [
         "January",
         "February",
@@ -37,25 +37,26 @@ fn month_label(month_year: &str) -> String {
         "November",
         "December",
     ];
-    let parts: Vec<&str> = month_year.split('-').collect();
+    let parts: Vec<&str> = year_month.split('-').collect();
     match (parts.first(), parts.get(1)) {
         (Some(y), Some(m)) => {
             let idx: usize = m.parse::<usize>().unwrap_or(1).saturating_sub(1);
             format!("{} {y}", months.get(idx).unwrap_or(&""))
         }
-        _ => month_year.to_string(),
+        _ => year_month.to_string(),
     }
 }
 
 pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
     let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
-    let month_year = current_month_year();
-    let summary = dashboard_service::portfolio_summary(&state.db, &sess.user_id, &month_year)?;
+    let year_month = current_year_month();
+    let summary =
+        dashboard_service::portfolio_summary(&state.db, &sess.user_id, &month_label(&year_month))?;
     let overview_data = dashboard_service::building_overview(&state.db, &sess.user_id)?;
 
     let mut ctx: HashMap<&str, String> = HashMap::new();
     ctx.insert("landlord_name", sess.name.clone());
-    ctx.insert("date_label", month_label(&month_year));
+    ctx.insert("date_label", month_label(&year_month));
     ctx.insert("overview_rows", overview_table(overview_data));
 
     if summary.has_buildings {
