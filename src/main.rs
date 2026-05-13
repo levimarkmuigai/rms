@@ -25,7 +25,7 @@ fn main() {
     let cfg = Config::default();
     let pool = db::build_pool(&cfg.database_url);
     let listener = TcpListener::bind(cfg.addr.clone()).expect("bind failed");
-    let state = AppState::new(pool, cfg.clone());
+    let state = AppState::new(pool);
     let router = Arc::new(server::router::build(state));
 
     tracing::info!("listening on http://{}", cfg.addr);

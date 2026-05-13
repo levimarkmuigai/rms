@@ -98,14 +98,10 @@ pub fn build(state: Arc<AppState>) -> Router {
         ("POST", "/tenant/request/submit"),
         crate::handlers::tenant::dashboard::submit,
     );
-    routes.insert(
+    /*routes.insert(
         ("POST", "/tenant/payment/initiate"),
         crate::handlers::tenant::payment::initiate,
-    );
-    routes.insert(
-        ("POST", "/mpesa/callback"),
-        crate::handlers::tenant::mpesa_callback::callback,
-    );
+    );*/
 
     routes.insert(("GET", "/admin"), crate::handlers::admin::dashboard::show);
     Router { routes, state }

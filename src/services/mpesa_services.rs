@@ -5,22 +5,35 @@ use crate::{config::Config, error::AppError};
 const SANDBOX_BASE: &str = "http://sandbox.safaricom.co.ke";
 
 pub fn get_token(consumer_key: &str, consumer_secret: &str) -> Result<String, AppError> {
+    tracing::debug!("requesting mpesa token");
     let credentials = format!("{}:{}", consumer_key, consumer_secret);
 
     let encoded = general_purpose::STANDARD.encode(credentials);
 
-    let response: serde_json::Value = ureq::get(&format!(
+    tracing::debug!(encoded_credentials = %encoded, "token request credentials");
+
+    let mut response = ureq::get(&format!(
         "{}/oauth/v1/generate?grant_type=client_credentials",
         SANDBOX_BASE
     ))
     .header("Authorization", &format!("Basic {}", encoded))
     .call()
-    .map_err(|e| AppError::Internal(e.to_string()))?
-    .body_mut()
-    .read_json()
-    .map_err(|e| AppError::Internal(e.to_string()))?;
+    .map_err(|e| {
+        tracing::error!("token request failed: {}", e);
+        AppError::Internal(e.to_string())
+    })?;
 
-    response["access_token"]
+    let body = response
+        .body_mut()
+        .read_to_string()
+        .map_err(|e| AppError::Internal(e.to_string()))?;
+
+    tracing::debug!("mpesa token response: {}", body);
+
+    let json: serde_json::Value =
+        serde_json::from_str(&body).map_err(|e| AppError::Internal(e.to_string()))?;
+
+    json["access_token"]
         .as_str()
         .map(|s| s.to_string())
         .ok_or_else(|| AppError::Internal("missing access_token".into()))
@@ -47,6 +60,9 @@ pub fn stk_push(cfg: &Config, phone: &str, amount: i32, unit_id: &str) -> Result
         "AccountReference": unit_id,
         "TransactionDesc": "Rent Payment"
     });
+
+    tracing::debug!("stk push payload: {}", body);
+    tracing::debug!("stk push token: {}", token);
 
     let response: serde_json::Value =
         ureq::post(&format!("{}/mpesa/stkpush/v1/processrequest", SANDBOX_BASE))
