@@ -45,7 +45,7 @@ pub fn find_panel_row(
 ) -> Result<Vec<RequestPanelRow>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
-        "SELECT 
+        "SELECT
         r.id, r.description, u.unit_number as unit_number, r.created_at, r.status
         FROM maintenance_requests r
         JOIN units u ON u.id = r.unit_id

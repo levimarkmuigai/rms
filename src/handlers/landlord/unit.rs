@@ -3,10 +3,10 @@ use std::{collections::HashMap, sync::Arc};
 use uuid::Uuid;
 
 use crate::{
-    entities::{building::Building, user::Role},
+    entities::{building::Building, notice::Notice, user::Role},
     error::AppError,
     handlers::landlord::utils,
-    repositories::activity_repo,
+    repositories::{activity_repo, notice_repo},
     server::{auth, form, request::Request, response::Response},
     services::{
         landlord::{
@@ -134,33 +134,39 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
 
             let details_html = match unit_stats {
                 None => "<p class=\"empty-detail\">no units for this building.</p>".into(),
-                Some(u) => format!(
-                    "
-                <div class=\"detail-header\">
-                <h2 class=\"detail-title\">{number}</h2>
-                <div class=\"detail-actions\">
-                <button id=\"open-assign-tenant\"> assign unit</button>
-                <form action=\"/landlord/unit/vacate\" method=\"POST\">
-                <input type=\"hidden\" value=\"{id}\" name=\"unit_id\">
-                <button type=\"submit\" class=\"danger-btn\">vacate tenant</button>
-                </form>
-                </div>
-                </div>
-                <div class=\"stat-grid\">
-                <div class=\"stat-box\">
-                <span class=\"stat-label\">rent amount</span>
-                <span class=\"stat-value\">{rent}</span>
-                </div>
-                <div class=\"stat-box\">
-                <span class=\"stat-label\">vacancy status</span>
-                <span class=\"stat-value\">{status}</span>
-                </div>
-                </div>",
-                    id = u.id,
-                    number = u.number,
-                    rent = utils::kes(u.rent_amount),
-                    status = u.status,
-                ),
+                Some(u) => {
+                    let notice_opt = notice_repo::find_pending(&state.db, &u.id)?;
+
+                    let notice_html = notice_form(notice_opt);
+
+                    format!(
+                        r#"<div class="detail-header">
+                    <h2 class="detail-title">{number}</h2>
+                    <div class="detail-actions">
+                    <button id="open-assign-tenant">assign unit</button>
+                    <form action="/landlord/unit/vacate" method="POST">
+                    <input type="hidden" value="{id}" name="unit_id">
+                    <button type="submit" class="danger-btn">vacate tenant</button>
+                    </form>
+                    </div>
+                    </div>
+                    <div class="b-stat-grid">
+                    <div class="b-stat-box">
+                    <span class="stat-label">rent amount</span>
+                    <span class="stat-value">{rent}</span>
+                    </div>
+                    <div class="b-stat-box">
+                    <span class="stat-label">vacancy status</span>
+                    <span class="stat-value">{status}</span>
+                    </div>
+                    </div>
+                    {notice_html}"#,
+                        id = u.id,
+                        number = u.number,
+                        rent = utils::kes(u.rent_amount),
+                        status = u.status,
+                    )
+                }
             };
 
             let units_count = units.len();
@@ -228,4 +234,57 @@ fn building_nav(buildings: &[Building], active: &Option<Uuid>) -> String {
         format!(r#"<a href="/landlord/units?building_id={id}" class="building-tab{active_class}">{name}</a>"#,
             id = b.id, name = b.name,)
     }).collect()
+}
+
+pub fn notice_form(notice_opt: Option<Notice>) -> String {
+    notice_opt
+        .map(|n| {
+            format!(
+                r#"<div class="notice-card">
+                  <div class="notice-body">
+                    <span class="notice-label">vacancy notice</span>
+                    <span class="notice-date">move-out date {date}</span>
+                    <span class="notice-meta">submitted {submitted_at}</span>
+                  </div>
+                  <div class="notice-actions">
+                    <form action="/landlord/vacancy/approve" method="POST">
+                      <input type="hidden" name="notice_id" value="{notice_id}">
+                      <button type="submit" class="notice-btn">approve</button>
+                    </form>
+                    <form action="/landlord/vacancy/reject" method="POST">
+                      <input type="hidden" name="notice_id" value="{notice_id}">
+                      <button type="submit" class="notice-btn danger-btn">reject</button>
+                    </form>
+                  </div>
+                </div>"#,
+                date = n.date,
+                submitted_at = utils::time_ago(n.submitted_at),
+                notice_id = n.id,
+            )
+        })
+        .unwrap_or_default()
+}
+
+pub fn approve_notice(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
+    let f = form::parse(&req.body);
+
+    let notice_id: Uuid = f
+        .get("notice_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("notice_id missing".into()))?;
+
+    notice_repo::approve(&state.db, &notice_id)?;
+    Ok(Response::redirect("/landlord/units"))
+}
+
+pub fn reject_notice(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
+    let f = form::parse(&req.body);
+
+    let notice_id: Uuid = f
+        .get("notice_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("notice_id missing".into()))?;
+
+    notice_repo::reject(&state.db, &notice_id)?;
+    Ok(Response::redirect("/landlord/units"))
 }

@@ -162,7 +162,8 @@ h3 {
   gap: 12px;
 }
 
-.activity-desc {
+.activity-desc,
+.vacation-date {
   grid-column: 1;
   grid-row: 1;
   font-size: 13px;
@@ -171,14 +172,16 @@ h3 {
 
 
 .activity-timestamp,
-.activity-amount {
+.activity-amount,
+.submitted-at {
   grid-column: 1;
   grid-row: 2;
   font-size: 11px;
   color: var(--text-muted);
 }
 
-.activity-status {
+.activity-status,
+.vacation-status {
   grid-column: 2;
   grid-row: 1 / span 2;
   font-size: 10px;

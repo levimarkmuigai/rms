@@ -282,3 +282,67 @@ aside {
   color: var(--text-muted);
   padding: 1rem;
 }
+
+.notice-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  background: var(--light-card);
+  border: 1px solid var(--light-border);
+  border-radius: 12px;
+  padding: .85rem 1rem;
+  margin-top: 1rem;
+}
+
+.notice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.notice-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.notice-date {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+}
+
+.notice-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.notice-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.notice-btn {
+  background: transparent;
+  border: 1px solid var(--light-border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.notice-btn:hover {
+  background: var(--ink);
+  color: var(--light-card);
+  border-color: var(--ink);
+}

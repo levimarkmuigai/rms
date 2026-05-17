@@ -3,6 +3,7 @@ use std::{collections::HashMap, sync::Arc, time::SystemTime};
 use crate::{
     entities::user::Role,
     error::AppError,
+    repositories::notice_repo,
     server::{auth, request::Request, response::Response},
     services::tenant::dashboard_services::{self, PaymentActivity, RequestActivity},
     state::AppState,
@@ -18,9 +19,12 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     let requests = dashboard_services::request_activity(&state.db, &sess.user_id)?;
     let payments = dashboard_services::payment_activity(&state.db, &sess.user_id)?;
 
+    let notice = notice_repo::tenant_view(&state.db, &sess.user_id)?;
+
     let request_html = request_activity(requests);
     let payments_html = payment_activity(payments);
     let payment_form_html = payment_form();
+    let notice_details_html = notice_details(notice);
 
     let mut ctx = HashMap::new();
     ctx.insert("tenant_name", sess.name);
@@ -32,6 +36,8 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     ctx.insert("payment_card", payments_html);
 
     ctx.insert("payment_form", payment_form_html);
+
+    ctx.insert("vacancy_card", notice_details_html);
     Ok(Response::html(200, engine::render(DASH_HTML, &ctx)))
 }
 
@@ -68,6 +74,25 @@ fn payment_activity(p: Vec<PaymentActivity>) -> String {
                 timestamp = p.month_year,
                 amount = p.amount,
                 status = p.status,
+            )
+        })
+        .collect()
+}
+
+fn notice_details(n: Vec<(String, String, SystemTime)>) -> String {
+    n.iter()
+        .map(|n| {
+            let submitted_at = time_ago(n.2);
+            format!(
+                r#"
+       <div class="vacancy-card">
+          <span class="vacation-date">move-out: {date}</span>
+          <span class="submitted-at">{submitted_at}</span>
+          <span class="vacation-status">{status}</span>
+        </div>
+        "#,
+                date = n.0,
+                status = n.1
             )
         })
         .collect()
