@@ -59,3 +59,50 @@ export function validatePassword(passwordInput, errorSpanId) {
 
   return true;
 }
+
+export function validateDate(dateInput, errorSpanId) {
+  const date = dateInput.value.trim();
+
+  if (date.indexOf("-") === -1) {
+    setErrorState(dateInput, errorSpanId, "date must be entered in the dd-mm-yyyy format.");
+    return false;
+  }
+
+  const parts = date.split("-");
+
+  if (parts.length < 3 || parts[0].length < 1 || parts[1].length < 1 || parts[2].length != 4) {
+    setErrorState(dateInput, errorSpanId, "date must be entered in the dd-mm-yyyy format.");
+    return false;
+  }
+
+  if (isNaN(parts[0]) || isNaN(parts[1]) || isNaN(parts[2])) {
+    setErrorState(dateInput, errorSpanId, "date must be numbers");
+    return false;
+
+  }
+
+  if (parts[0] > 31) {
+    setErrorState(dateInput, errorSpanId, "date out of bounds");
+    return false;
+  }
+
+  if (parts[1] > 12) {
+    setErrorState(dateInput, errorSpanId, "month out of bounds");
+    return false;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const targetDate = new Date(parts[2], parts[1] - 1, parts[0]);
+
+  const milisecondsPerDay = 1000 * 60 * 60 * 24;
+  const differenceInDays = (targetDate.getTime() - today.getTime()) / milisecondsPerDay;
+
+  if (differenceInDays < 30) {
+    setErrorState(dateInput, errorSpanId, "move-out date has to be more than 30 days from today");
+    return false;
+  }
+
+  return true;
+}

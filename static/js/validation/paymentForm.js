@@ -1,4 +1,4 @@
-/**import { validateNumber } from "./utils/validator.js";
+import { validateNumber } from "./utils/validator.js";
 
 export const paymentFormValidation = () => {
   const numberInput = document.getElementById('phone');
@@ -13,4 +13,4 @@ export const paymentFormValidation = () => {
 
     if (!isNumberInput) return event.preventDefault();
   });
-};*/
+};

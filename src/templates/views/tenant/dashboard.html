@@ -48,6 +48,27 @@
           </div>
         </div>
       </div>
+
+      <div class="vacate">
+        <h2 class="section-header">vacancy</h2>
+         <div class="modal-card">
+          <form id="vacancy-form" action="/tenant/notice/submit" method="POST">
+            <p class="modal-title">send notice</p>
+            <div class="input-container">
+              <label for="date">move-out date</label>
+              <input type="text" name="date" id="date" placeholder="dd-mm-yyyy">
+              <span id="date-error" class="error-message"></span>
+           </div>
+           <button type="submit" class="form-button">submit</button>
+          </form>
+        </div>
+
+        <div class="vacancy-card">
+          <span class="vacation_date"></span>
+          <span class="submitted-at"></span>
+          <span class="vacation-status"></span>
+        </div>
+      </div>
     </div>
 
     <div id="request-modal" class="modal-overlay card-hidden">
@@ -59,7 +80,7 @@
             <input type="text" id="description" name="description">
             <span id="desc-error" class="error-message"></span>
           </div>
-          <button type="submit" class="form-button">submit</button> 
+          <button type="submit" class="form-button">submit</button>
         </form>
       </div>
     </div>

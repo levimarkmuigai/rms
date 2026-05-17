@@ -149,7 +149,8 @@ h3 {
   flex: 1;
 }
 
-.activity-card {
+.activity-card,
+.vacancy-card {
   background-color: var(--light-card);
   border: 1px solid var(--light-border);
   border-radius: 12px;
@@ -231,5 +232,12 @@ h3 {
 .action-btn span {
   font-size: 11px;
   color: var(--text-muted);
+}
+
+.vacate {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
 }
 

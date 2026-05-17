@@ -102,6 +102,10 @@ pub fn build(state: Arc<AppState>) -> Router {
         ("POST", "/tenant/payment/initiate"),
         crate::handlers::tenant::payments::submit,
     );
+    routes.insert(
+        ("POST", ("/tenant/notice/submit")),
+        crate::handlers::tenant::notice::submit,
+    );
 
     routes.insert(("GET", "/admin"), crate::handlers::admin::dashboard::show);
     Router { routes, state }
