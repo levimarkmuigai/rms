@@ -38,7 +38,7 @@
 }
 
 #open-add-unit:hover, #open-assign-caretaker:hover {
-  color: var(--ink);
+  color: #A0A0A0;
 }
 
 #add-unit-modal, #assign-building-modal {

@@ -35,7 +35,7 @@
 
 .building-tab a:hover {
   transform: scale(0.95);
-  color: var(--ink);
+  color: #A0A0A0;
 }
 
 .active-building {

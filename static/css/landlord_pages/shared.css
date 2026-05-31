@@ -5,7 +5,7 @@
   --light-sunken: #E8E8E8;
   --light-border: #E0E0E0;
   --ink:          #111111;
-  --text-muted:   #A0A0A0;
+  --text-muted:   #111111;
   --shadow-color: 170, 170, 170;
 }
 
@@ -55,9 +55,9 @@ aside {
   transition: color 200ms ease, transform 200ms ease;
 }
 
-.aside-items a:hover       { color: var(--ink); transform: scale(0.95); }
+.aside-items a:hover       { color: #A0A0A0; transform: scale(0.95); }
 .aside-items a:active      { transform: scale(0.92); }
-.aside-items .current-page { color: var(--ink); }
+.aside-items .current-page { color: #A0A0A0; }
 
 .dash-container {
   display: flex;
@@ -96,7 +96,7 @@ aside {
 }
 
 .back-link:hover {
-  color: var(--ink);
+  color: #A0A0A0;
   transform: translateX(-4px);
 }
 
@@ -269,9 +269,9 @@ aside {
   transition: color 150ms ease, border-color 150ms ease;
 }
 
-.building-tab:hover       { color: var(--ink); }
+.building-tab:hover       { color: #A0A0A0; }
 .building-tab.active-item {
-  color: var(--ink);
+  color: #A0A0A0;
   border-color: var(--light-border);
   background: var(--light-card);
 }
@@ -342,7 +342,7 @@ aside {
 }
 
 .notice-btn:hover {
-  background: var(--ink);
+  background: #A0A0A0;
   color: var(--light-card);
-  border-color: var(--ink);
+  border-color: #A0A0A0;
 }
