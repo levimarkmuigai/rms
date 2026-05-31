@@ -5,7 +5,8 @@
   --light-sunken: #E8E8E8;
   --light-border: #E0E0E0;
   --ink:          #111111;
-  --text-muted:   #111111;
+  --text-muted: #6B6B6B;
+  --text-dim:   #A0A0A0;
   --shadow-color: 170, 170, 170;
 }
 
@@ -13,49 +14,77 @@
   font-family: 'Inter', sans-serif;
   box-sizing: border-box;
   margin: 0;
-  padding: 0;
 }
 
 body {
-  background: var(--light-base);
+  background-color: var(--light-base);
   display: flex;
   color: var(--ink);
-  height: 100vh;
+  justify-content: center;
+  flex-direction: row;
+  min-height: 100vh;
   padding: 20px;
   gap: 20px;
+  line-height: 1.5;
 }
 
 aside {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  background: var(--light-main);
+  background-color: var(--light-main);
   border: 1px solid var(--light-border);
   border-radius: 32px;
-  width: 160px;
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
+  width: 180px;
+  min-height: calc(100vh - 40px);
   padding: 1.5rem;
+  position: sticky;
+  top: 20px;
+  overflow-y: auto;
+  align-self: flex-start;
 }
 
 .aside-items {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 20px;
+  gap: 4px;
+}
+
+.aside-wordmark {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  align-self: flex-start;
 }
 
 .aside-items a {
   background: transparent;
   text-decoration: none;
-  color: var(--text-muted);
+  text-transform: uppercase;
+  color: var(--ink);
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
+  font-family: inherit;
   font-weight: 500;
   letter-spacing: 0.08em;
+  padding: 10px 12px;
+  border: none;
+  cursor: pointer;
   transition: color 200ms ease, transform 200ms ease;
 }
 
-.aside-items a:hover       { color: #A0A0A0; transform: scale(0.95); }
+.aside-items a:hover {
+  color: var(--text-dim);
+  transform: scale(0.95);
+}.aside-items a:hover {
+  color: var(--text-dim);
+  transform: scale(0.95);
+}
+
 .aside-items a:active      { transform: scale(0.92); }
 .aside-items .current-page { color: #A0A0A0; }
 

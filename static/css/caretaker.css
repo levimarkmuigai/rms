@@ -1,17 +1,19 @@
 :root {
-  --light-base: #F3F3F3;
-  --light-main: #F0F0F0;
-  --light-card: #FFFFFF;
-  --light-sunken:  #E8E8E8;
+  --light-base:   #F3F3F3;
+  --light-main:   #F0F0F0;
+  --light-card:   #FFFFFF;
+  --light-sunken: #E8E8E8;
   --light-border: #E0E0E0;
-  --ink: #111111;
-  --text-muted: #111111;
+  --ink:          #111111;
+  --text-muted: #6B6B6B;
+  --text-dim:   #A0A0A0;
   --shadow-color: 170, 170, 170;
 }
 
 * {
   font-family: 'Inter', sans-serif;
   box-sizing: border-box;
+  margin: 0;
 }
 
 body {
@@ -20,8 +22,7 @@ body {
   color: var(--ink);
   justify-content: center;
   flex-direction: row;
-  height: 100vh;
-  margin: 0;
+  min-height: 100vh;
   padding: 20px;
   gap: 20px;
   line-height: 1.5;
@@ -30,35 +31,54 @@ body {
 aside {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background-color: var(--light-main);
   border: 1px solid var(--light-border);
   border-radius: 32px;
   box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
-  width: 160px;
+  width: 180px;
   padding: 1.5rem;
+  min-height: calc(100vh - 40px);
+  position: sticky;
+  top: 20px;
+  overflow-y: auto;
+  align-self: flex-start;
+}
+
+.aside-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+}
+
+.aside-wordmark {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  align-self: flex-start;
 }
 
 .aside-item button {
-  background-color: transparent;
-  color: var(--text-muted);
+  background: transparent;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: var(--ink);
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 14px;
   font-family: inherit;
   font-weight: 500;
   letter-spacing: 0.08em;
-  border: 1px solid transparent;
-  transition: color 200ms ease-in-out, transform 250ms ease-in-out;
+  padding: 10px 12px;
+  border: none;
   cursor: pointer;
+  transition: color 200ms ease, transform 200ms ease;
 }
 
 .aside-item button:hover {
-  transform: scale(0.95);
-  color: var(--ink);
-}
-
-.aside-item button:active {
+  color: var(--text-dim);
   transform: scale(0.95);
 }
 
@@ -180,23 +200,27 @@ header h1 {
 }
 
 .request-desc {
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--ink);
   line-height: 1.4;
+  text-transform: capitalize;
 }
 
-.request-unit {
-  font-size: 11px;
-  font-weight: 500;
+.req-unit {
+  font-size: 15px;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
 .req-timestamp {
-  font-size: 11px;
+  font-size: 15px;
   color: var(--text-muted);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
 .request-card-body {
@@ -207,11 +231,12 @@ header h1 {
 
 .request-view button {
   background: transparent;
-  border: 1px solid var(--light-border);
+  border: none;
   border-radius: 20px;
   padding: 5px 14px;
-  font-size: 11px;
+  font-size: 12px;
   font-family: inherit;
+  text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--text-muted);
