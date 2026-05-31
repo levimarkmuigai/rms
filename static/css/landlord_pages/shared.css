@@ -158,20 +158,48 @@ aside {
 
 .header-btn:hover { opacity: 0.8; }
 
-.danger-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-family: inherit;
-  font-weight: 500;
-  padding: 0;
-  cursor: pointer;
-  transition: color 150ms ease;
+.building-info-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  background: var(--light-card);
+  border: 1px solid var(--light-border);
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  position: sticky;
+  top: 20px;
+  width: 100%;
+  align-self: flex-start;
 }
 
-.danger-btn:hover { color: #D32F2F; }
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 1.25rem 1.75rem;
+  flex: 1;
+  border-right: 1px solid var(--light-border);
+}
 
+.info-group:last-child {
+  border-right: none;
+}
+
+.info-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.info-value {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
 .split-view {
   display: flex;
   width: 100%;
@@ -375,3 +403,78 @@ aside {
   color: var(--light-card);
   border-color: #A0A0A0;
 }
+
+
+.table-panel {
+   background-color: var(--light-card);
+  border: 1px solid var(--light-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ink);
+  text-align: left;
+  padding: 0.75rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--light-border);
+}
+
+table td {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ink);
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--light-border);
+}
+
+table tr:last-child td { border-bottom: none; }
+table tr:hover td { background: var(--light-sunken); }
+
+.row-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.row-actions form {
+  width: 100%;
+}
+
+.row-actions form button {
+  width: 100%;
+  text-align: left;
+}
+
+td button, td a {
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-family: inherit;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease-in, transform 200ms ease-out;
+}
+
+td button:hover, td a:hover  {
+  background: var(--ink);
+  color: var(--light-card);
+  border-color: var(--ink);
+}
+

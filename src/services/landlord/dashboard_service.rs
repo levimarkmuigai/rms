@@ -12,15 +12,6 @@ pub struct PortfolioSummary {
     pub arrears_tenants: i64,
 }
 
-pub struct BuildingCard {
-    pub id: Uuid,
-    pub name: String,
-    pub total_units: i64,
-    pub is_occupied: i64,
-    pub vacant: i64,
-    pub collected: i32,
-}
-
 pub struct BuildingOverview {
     pub name: String,
     pub cartaker_id: Option<Uuid>,
@@ -62,26 +53,6 @@ pub fn portfolio_summary(
         total_arrears: arrears,
         arrears_tenants: arr_tenants,
     })
-}
-
-pub fn building_cards(
-    pool: &PgPool,
-    landlord_id: &Uuid,
-    month_year: &str,
-) -> Result<Vec<BuildingCard>, AppError> {
-    let building_cards = building_repo::building_summeries(pool, landlord_id, month_year)?;
-
-    Ok(building_cards
-        .into_iter()
-        .map(|bc| BuildingCard {
-            id: bc.id,
-            name: bc.name,
-            total_units: bc.total_units,
-            is_occupied: bc.occupied,
-            vacant: bc.total_units - bc.occupied,
-            collected: bc.collected,
-        })
-        .collect())
 }
 
 pub fn building_overview(

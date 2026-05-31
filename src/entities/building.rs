@@ -7,12 +7,15 @@ pub struct Building {
     pub name: String,
 }
 
-pub struct BuildingSummaryRow {
+pub struct BuildingTableRow {
     pub id: Uuid,
     pub name: String,
-    pub total_units: i64,
+    pub vacant: i64,
     pub occupied: i64,
     pub collected: i32,
+    pub owner: String,
+    pub location: String,
+    pub city: String,
 }
 
 pub struct BuildingOverviewRow {

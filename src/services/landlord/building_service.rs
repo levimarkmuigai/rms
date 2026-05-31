@@ -4,13 +4,31 @@ use crate::{
     db::PgPool, entities::building::Building, error::AppError, repositories::building_repo,
 };
 
-pub fn add(pool: &PgPool, landlord_id: &Uuid, name: String) -> Result<(), AppError> {
+pub fn add(
+    pool: &PgPool,
+    landlord_id: &Uuid,
+    name: String,
+    city: String,
+    location: String,
+    owner: String,
+) -> Result<(), AppError> {
     if name.is_empty() {
         return Err(AppError::BadRequest("name is required".into()));
     }
 
+    if city.is_empty() {
+        return Err(AppError::BadRequest("city is required".into()));
+    }
+
+    if location.is_empty() {
+        return Err(AppError::BadRequest("location is required".into()));
+    }
+
+    if owner.is_empty() {
+        return Err(AppError::BadRequest("owner is required".into()));
+    }
     let id = Uuid::new_v4();
-    building_repo::insert(pool, landlord_id, &id, &name)
+    building_repo::insert(pool, landlord_id, &id, &name, &city, &location, &owner)
 }
 
 pub fn remove(pool: &PgPool, landlord_id: &Uuid, id: &Uuid) -> Result<(), AppError> {

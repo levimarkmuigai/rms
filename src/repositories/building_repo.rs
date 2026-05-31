@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{
     db::PgPool,
-    entities::building::{Building, BuildingOverviewRow, BuildingSummaryRow},
+    entities::building::{Building, BuildingOverviewRow, BuildingTableRow},
     error::AppError,
 };
 
@@ -119,35 +119,42 @@ pub fn arrears_stats(
     ))
 }
 
-pub fn building_summeries(
+pub fn building_table_rows(
     pool: &PgPool,
     landlord_id: &Uuid,
     month_year: &str,
-) -> Result<Vec<BuildingSummaryRow>, AppError> {
+) -> Result<Vec<BuildingTableRow>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
         "SELECT
         b.id,
         b.name,
-        COUNT(u.id) AS total_units,
+        b.owner,
+        b.location,
+        b.city,
+        COUNT(u.id) FILTER (WHERE u.status = 'vacant') AS vacant,
         COUNT(u.id) FILTER (WHERE u.status = 'occupied') AS occupied,
         CAST(COALESCE(SUM(p.amount), 0) AS INT) AS collected
         FROM buildings b
         LEFT JOIN units u ON u.building_id = b.id
         LEFT JOIN payments p ON p.unit_id = u.id AND p.month_year = $2
         WHERE b.landlord_id = $1
-        GROUP BY b.id, b.name",
+        GROUP BY b.id, b.name
+        ORDER BY b.created_at ASC",
         &[landlord_id, &month_year],
     )?;
 
     Ok(rows
         .iter()
-        .map(|r| BuildingSummaryRow {
+        .map(|r| BuildingTableRow {
             id: r.get("id"),
             name: r.get("name"),
-            total_units: r.get::<_, i64>("total_units"),
+            vacant: r.get::<_, i64>("vacant"),
             occupied: r.get::<_, i64>("occupied"),
             collected: r.get::<_, i32>("collected"),
+            owner: r.get("owner"),
+            location: r.get("location"),
+            city: r.get("city"),
         })
         .collect())
 }
@@ -190,11 +197,19 @@ pub fn buildings_overview_rows(
         .collect())
 }
 
-pub fn insert(pool: &PgPool, landlord_id: &Uuid, id: &Uuid, name: &str) -> Result<(), AppError> {
+pub fn insert(
+    pool: &PgPool,
+    landlord_id: &Uuid,
+    id: &Uuid,
+    name: &str,
+    city: &str,
+    location: &str,
+    owner: &str,
+) -> Result<(), AppError> {
     let mut client = pool.get()?;
     client.execute(
-        "INSERT INTO buildings (id,landlord_id,name) VALUES($1,$2,$3)",
-        &[id, landlord_id, &name],
+        "INSERT INTO buildings (id,landlord_id,name,city,location,owner) VALUES($1,$2,$3,$4,$5,$6)",
+        &[id, landlord_id, &name, &city, &location, &owner],
     )?;
     tracing::debug!(%name, "building inserted");
     Ok(())

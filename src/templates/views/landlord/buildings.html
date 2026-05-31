@@ -13,7 +13,7 @@
       <div class="aside-items">
         <span class="aside-wordmark">RMS MENU</span>
         <a href="/landlord">profile</a>
-        <a href="landlord/buildings" class="current-page">buildings</a>
+        <a href="/landlord/buildings" class="current-page">buildings</a>
         <a href="/landlord/units">units</a>
       </div>
     </aside>
@@ -23,19 +23,26 @@
         <div class="header-group">
           <a href="/landlord" class="back-link">← back to dashboard</a>
           <h1 class="page-title">property portfolio</h1>
-          <span class="date-stamp">{{buildings_count}}</span>
-        </div>
+          <span class="date-stamp">{{ buildings_count }}</span>
+       </div>
         <button class="header-btn" id="open-add-modal">add building +</button>
       </header>
-
-      <div class="split-view">
-        <div class="master-list">
-          {{buildings_list}}
-        </div>
-
-        <main class="detail-panel">
-          {{detail}}
-        </main>
+      {{ building_header }}
+      <div class="table-panel">
+        <table>
+          <thead>
+            <tr>
+              <th>building</th>
+              <th>collected</th>
+              <th>occupied</th>
+              <th>vacant</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ buildings_table }}
+          </tbody>
+        </table>
       </div>
     </div>
 
