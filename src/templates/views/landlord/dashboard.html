@@ -15,6 +15,7 @@
         <a href="landlord/units">units</a>
       </div>
     </aside>
+    
     <div class="dash-container">
       <header class="dash-header">
         <h1 class="page-title">portfolio overview</h1>
@@ -28,13 +29,13 @@
           <span class="kpi-context">expected: {{ expected_revenue }}</span>
         </div>
 
-         <div class="kpi-card">
+        <div class="kpi-card">
           <span class="kpi-label">active occupancy</span>
           <span class="kpi-value">{{ occupancy_pct }}</span>
           <span class="kpi-context">{{ vacant_units }}</span>
         </div>
 
-         <div class="kpi-card">
+        <div class="kpi-card">
           <span class="kpi-label">total arrears</span>
           <span class="kpi-value">{{ total_arrears }}</span>
           <span class="kpi-context">{{ arrears_context }}</span>
@@ -42,7 +43,7 @@
       </div>
 
       <div class="triage-section">
-         <div class="triage-panel">
+        <div class="triage-panel">
           <div class="panel-header">
             <h2 class="panel-title">buildings overview</h2>
           </div>
@@ -56,61 +57,64 @@
                 <th></th>
               </tr>
             </thead>
-
             <tbody>
               {{ overview_rows }}
             </tbody>
-
           </table>
-          </div>
         </div>
       </div>
-    </div> 
+    </div>
 
     <div id="profile-modal" class="modal-overlay card-hidden">
-      <div class="modal-card">
+      <div class="modal-card" onclick="event.stopPropagation()">
         <form action="/update_profile" method="POST" id="profile-form">
           <p class="modal-title">personal details</p>
           <div class="input-row">
             <div class="input-container">
               <label for="update-fname">first name</label>
-              <input type="text" id="update-fname" name="first-name">
+              <input type="text" id="update-fname" name="first-name" value="{{ profile_fname }}">
               <span id="update-fname-error" class="error-message"></span>
             </div>
             <div class="input-container">
               <label for="update-lname">last name</label>
-              <input type="text" id="update-lname" name="last-name">
+              <input type="text" id="update-lname" name="last-name" value="{{ profile_lname }}">
               <span id="update-lname-error" class="error-message"></span>
             </div>
           </div>
 
           <p class="modal-title">contacts</p>
           <div class="input-row">
-          <div class="input-container">
-            <label for="update-email">email</label>
-            <input type="text" id="update-email" name="email">
-            <span id="update-email-error" class="error-message"></span>
+            <div class="input-container">
+              <label for="update-email">email</label>
+              <input type="text" id="update-email" name="email" value="{{ profile_email }}">
+              <span id="update-email-error" class="error-message"></span>
+            </div>
+            <div class="input-container">
+              <label for="update-number">number</label>
+              <input type="text" id="update-number" name="number" value="{{ profile_number }}" placeholder="07XXXXXXXX">
+              <span id="update-number-error" class="error-message"></span>
+            </div>
           </div>
-         <div class="input-container">
-          <label for="update-number">number</label>
-          <input type="text" id="update-number" name="number" placeholder="07XXXXXXXX">
-          <span id="update-number-error" class="error-message"></span>
-        </div>
+
+          <p class="modal-title">password</p>
+          <div class="input-row">
+            <div class="input-container">
+              <label for="update-password">new password</label>
+              <input type="text" id="update-password" name="password">
+              <span id="update-password-error" class="error-message"></span>
+            </div>
+            <div class="input-container">
+              <label for="update-confirm-password">confirm password</label>
+              <input type="text" id="update-confirm-password" name="confirm-password">
+              <span id="update-confirm-password-error" class="error-message"></span>
+            </div>
+          </div>
+
+          <button type="submit" class="form-button">update account</button>
+        </form>
       </div>
+    </div>
 
-      <p class="modal-title">credentials</p>
-      <div class="input-container">
-        <label for="update-password">password</label>
-        <input type="text" id="update-password" name="password">
-        <span id="update-password-error" class="error-message"></span>
-      </div>
-
-      <button type="submit" class="form-button">update account</button>
-    </form>
-  </div>
-</div>
-
-  <script type="module" src="../static/js/main.js"></script>
+    <script type="module" src="../static/js/main.js"></script>
   </body>
 </html>
-

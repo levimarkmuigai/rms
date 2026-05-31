@@ -3,8 +3,9 @@ use std::{collections::HashMap, sync::Arc, time::SystemTime};
 use uuid::Uuid;
 
 use crate::{
-    entities::user::Role,
+    entities::user::{Role, User},
     error::AppError,
+    repositories::user_repo,
     server::{auth, form, request::Request, response::Response},
     services::caretaker::dashboard_services::{self, PanelRequests},
     state::AppState,
@@ -19,8 +20,24 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     let requests = dashboard_services::request_panel(&state.db, &sess.user_id)?;
 
     let (pending, inprogress) = request_panel(requests);
+
+    let user: User = user_repo::find_by_id(&state.db, &sess.user_id)?
+        .ok_or(AppError::BadRequest("user not found".into()))?;
+
+    let (first_name, last_name) = user
+        .name
+        .split_once(" ")
+        .ok_or(AppError::BadRequest("user name not found".into()))?;
+
     let mut ctx = HashMap::new();
+
+    ctx.insert("profile_fname", first_name.to_string());
+    ctx.insert("profile_lname", last_name.to_string());
+    ctx.insert("profile_email", user.email.clone());
+    ctx.insert("profile_number", user.number.clone());
+
     ctx.insert("caretaker_name", sess.name);
+
     ctx.insert("pending_count", overview_metrics.0.to_string());
     ctx.insert("inprogress_count", overview_metrics.1.to_string());
     ctx.insert("resolved_count", overview_metrics.2.to_string());

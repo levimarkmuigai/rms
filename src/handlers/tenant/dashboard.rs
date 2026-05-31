@@ -1,9 +1,9 @@
 use std::{collections::HashMap, sync::Arc, time::SystemTime};
 
 use crate::{
-    entities::user::Role,
+    entities::user::{Role, User},
     error::AppError,
-    repositories::notice_repo,
+    repositories::{notice_repo, user_repo},
     server::{auth, request::Request, response::Response},
     services::tenant::dashboard_services::{self, PaymentActivity, RequestActivity},
     state::AppState,
@@ -26,7 +26,20 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     let payment_form_html = payment_form();
     let notice_details_html = notice_details(notice);
 
+    let user: User = user_repo::find_by_id(&state.db, &sess.user_id)?
+        .ok_or(AppError::BadRequest("user not found".into()))?;
+
+    let (first_name, last_name) = user
+        .name
+        .split_once(" ")
+        .ok_or(AppError::BadRequest("user name not found".into()))?;
+
     let mut ctx = HashMap::new();
+    ctx.insert("profile_fname", first_name.to_string());
+    ctx.insert("profile_lname", last_name.to_string());
+    ctx.insert("profile_email", user.email.clone());
+    ctx.insert("profile_number", user.number.clone());
+
     ctx.insert("tenant_name", sess.name);
     ctx.insert("unit_name", header_data.0);
     ctx.insert("apartment_name", header_data.1);

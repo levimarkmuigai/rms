@@ -51,18 +51,17 @@
 
       <div class="vacate">
         <h2 class="section-header">vacancy</h2>
-         <div class="modal-card">
+        <div class="modal-card">
           <form id="vacancy-form" action="/tenant/notice/submit" method="POST">
             <p class="modal-title">send notice</p>
             <div class="input-container">
               <label for="date">move-out date</label>
               <input type="text" name="date" id="date" placeholder="dd-mm-yyyy">
               <span id="date-error" class="error-message"></span>
-           </div>
-           <button type="submit" class="form-button">submit</button>
+            </div>
+            <button type="submit" class="form-button">submit</button>
           </form>
         </div>
-
         {{ vacancy_card }}
       </div>
     </div>
@@ -94,34 +93,44 @@
           <div class="input-row">
             <div class="input-container">
               <label for="update-fname">first name</label>
-              <input type="text" id="update-fname" name="first-name">
+              <input type="text" id="update-fname" name="first-name" value="{{ profile_fname }}">
               <span id="update-fname-error" class="error-message"></span>
             </div>
             <div class="input-container">
               <label for="update-lname">last name</label>
-              <input type="text" id="update-lname" name="last-name">
+              <input type="text" id="update-lname" name="last-name" value="{{ profile_lname }}">
               <span id="update-lname-error" class="error-message"></span>
             </div>
           </div>
+
           <p class="modal-title">contacts</p>
           <div class="input-row">
             <div class="input-container">
               <label for="update-email">email</label>
-              <input type="text" id="update-email" name="email">
+              <input type="text" id="update-email" name="email" value="{{ profile_email }}">
               <span id="update-email-error" class="error-message"></span>
             </div>
             <div class="input-container">
               <label for="update-number">number</label>
-              <input type="text" id="update-number" name="number" placeholder="07XXXXXXXX">
+              <input type="text" id="update-number" name="number" value="{{ profile_number }}" placeholder="07XXXXXXXX">
               <span id="update-number-error" class="error-message"></span>
             </div>
           </div>
-          <p class="modal-title">credentials</p>
-          <div class="input-container">
-            <label for="update-password">password</label>
-            <input type="password" id="update-password" name="password">
-            <span id="update-password-error" class="error-message"></span>
+
+          <p class="modal-title">password</p>
+          <div class="input-row">
+            <div class="input-container">
+              <label for="update-password">new password</label>
+              <input type="text" id="update-password" name="password">
+              <span id="update-password-error" class="error-message"></span>
+            </div>
+            <div class="input-container">
+              <label for="update-confirm-password">confirm password</label>
+              <input type="text" id="update-confirm-password" name="confirm-password">
+              <span id="update-confirm-password-error" class="error-message"></span>
+            </div>
           </div>
+
           <button type="submit" class="form-button">update account</button>
         </form>
       </div>

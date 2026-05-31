@@ -3,10 +3,10 @@ use std::{collections::HashMap, sync::Arc};
 use uuid::Uuid;
 
 use crate::{
-    entities::user::Role,
+    entities::user::{Role, User},
     error::AppError,
     handlers::landlord::utils,
-    repositories::activity_repo,
+    repositories::{activity_repo, user_repo},
     server::{auth, form, request::Request, response::Response},
     services::landlord::{
         building_service,
@@ -58,6 +58,19 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     ctx.insert("landlord_name", sess.name.clone());
     ctx.insert("date_label", month_label(&year_month));
     ctx.insert("overview_rows", overview_table(overview_data));
+
+    let user: User = user_repo::find_by_id(&state.db, &sess.user_id)?
+        .ok_or(AppError::BadRequest("user not found".into()))?;
+
+    let (first_name, last_name) = user
+        .name
+        .split_once(" ")
+        .ok_or(AppError::BadRequest("user name not found".into()))?;
+
+    ctx.insert("profile_fname", first_name.to_string());
+    ctx.insert("profile_lname", last_name.to_string());
+    ctx.insert("profile_email", user.email.clone());
+    ctx.insert("profile_number", user.number.clone());
 
     if summary.has_buildings {
         ctx.insert("collected_revenue", utils::kes(summary.collected_revenue));
