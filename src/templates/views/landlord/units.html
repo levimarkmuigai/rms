@@ -23,30 +23,37 @@
         <div class="header-group">
           <a href="/landlord" class="back-link">← back to dashboard</a>
           <h1 class="page-title">units portfolio</h1>
-          <span class="date-stamp">{{units_count}}</span>
+          <span class="date-stamp">{{ units_count }}</span>
         </div>
         <div class="building-nav">
           {{ buildings_list }}
         </div>
       </header>
 
-      <div class="split-view">
-        <div class="master-list">
-          {{units_list}}
-        </div>
+      {{ unit_header }}
 
-        <main class="detail-panel">
-          {{details}}
-        </main>
+      <div class="table-panel">
+        <table>
+          <thead>
+            <tr>
+              <th>unit</th>
+              <th>tenant</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ units_table }}
+          </tbody>
+        </table>
       </div>
     </div>
 
     <div id="assign-unit-modal" class="modal-overlay card-hidden">
-      <div class="modal-card">
+      <div class="modal-card" onclick="event.stopPropagation()">
         {{ assign_units }}
       </div>
     </div>
-    <script type="module" src="../static/js/main.js"></script>
+
+    <script type="module" src="/static/js/main.js"></script>
   </body>
 </html>
-

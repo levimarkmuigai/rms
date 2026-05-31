@@ -46,4 +46,5 @@ pub struct UnitSummaryRow {
     pub number: String,
     pub status: String,
     pub rent_amount: i32,
+    pub tenant_name: Option<String>,
 }

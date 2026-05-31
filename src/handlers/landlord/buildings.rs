@@ -64,8 +64,8 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         <td>{occupied}</td>
         <td>{vacant}</td>
         <td class="row-actions">
-        <button class="open-assign-caretaker" data-id="{id}">assign caretaker</button>
-        <button class="open-add-unit" data-id="{id}">add unit</button>
+        <button class="open-assign-caretaker" id="open-assign-caretaker" data-id="{id}">assign caretaker</button>
+        <button class="open-add-unit" id="open-add-unit" data-id="{id}">add unit</button>
         <form action="/delete-building" method="POST"
         onsubmit="return confirm('permanently delete this building?');">
         <input type="hidden" name="building_id" value="{id}">

@@ -3,16 +3,13 @@ use std::{collections::HashMap, sync::Arc};
 use uuid::Uuid;
 
 use crate::{
-    entities::{building::Building, notice::Notice, user::Role},
+    entities::{building::Building, notice::Notice, unit::UnitSummaryRow, user::Role},
     error::AppError,
     handlers::landlord::utils,
-    repositories::{activity_repo, notice_repo},
+    repositories::{activity_repo, notice_repo, unit_repo},
     server::{auth, form, request::Request, response::Response},
     services::{
-        landlord::{
-            building_service,
-            unit_service::{self, UnitStats},
-        },
+        landlord::{building_service, unit_service},
         user_service,
     },
     state::AppState,
@@ -83,85 +80,53 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
 
     let selected_building: Option<Uuid> = req.query.get("building_id").and_then(|v| v.parse().ok());
     let active_building = selected_building.or_else(|| buildings.first().map(|b| b.id));
-
     let buildings_list = building_nav(&buildings, &active_building);
 
     let selected_unit: Option<Uuid> = req.query.get("id").and_then(|v| v.parse().ok());
 
-    let building_stats: HashMap<Uuid, Vec<UnitStats>> = buildings
+    let building_stats: HashMap<Uuid, Vec<UnitSummaryRow>> = buildings
         .into_iter()
         .map(|b| {
-            let unit_stats = unit_service::unit_stats(&state.db, &b.id)?;
+            let unit_stats = unit_repo::unit_summary_row(&state.db, &b.id)?;
             Ok((b.id, unit_stats))
         })
         .collect::<Result<_, AppError>>()?;
-    let data_display: (usize, String, String, Option<Uuid>) = match active_building {
+
+    let (units_count, unit_header, units_table, active_unit) = match active_building {
         None => (
             0,
-            "<p class=\"empty-detail\">select a building to see details.</p>".into(),
-            "-".into(),
+            "<p class=\"empty-detail\">select a building to see units.</p>".into(),
+            String::new(),
             None,
         ),
         Some(b_id) => {
             let units = building_stats.get(&b_id).map(Vec::as_slice).unwrap_or(&[]);
+            let active_unit = selected_unit.or_else(|| units.first().map(|u| u.id));
 
-            let active_unit: Option<Uuid> = selected_unit.or_else(|| units.first().map(|u| u.id));
-
-            let unit_stats = active_unit
+            let selected_stats = active_unit
                 .and_then(|u_id| units.iter().find(|u| u.id == u_id))
                 .or(units.first());
 
-            let list_html: String = if units.is_empty() {
-                "<p class=\"empty-list\">no buildings added yet.
-                    <a href=\"/landlord/buildings\" id=\"open-add-modal\">add one →</a></p>"
-                    .into()
-            } else {
-                units.iter().map(|us| {
-                   let active = if Some(us.id) == active_unit {
-                       " active-item"
-                   } else {
-                       ""
-                   };
-                   let id = us.id;
-                   let number = us.number.clone();
-                   format!(
-                   "<a href=\"/landlord/units?id={id}&building_id={b_id}\" class=\"list-item{active}\">
-                   <span class=\"b-name\">{number}</span>
-                   </a>"
-                )
-               }).collect()
-            };
-
-            let details_html = match unit_stats {
+            let unit_header = match selected_stats {
                 None => "<p class=\"empty-detail\">no units for this building.</p>".into(),
                 Some(u) => {
-                    let notice_opt = notice_repo::find_pending(&state.db, &u.id)?;
-
-                    let notice_html = notice_form(notice_opt);
-
+                    let notice_html = notice_form(notice_repo::find_pending(&state.db, &u.id)?);
                     format!(
-                        r#"<div class="detail-header">
-                    <h2 class="detail-title">{number}</h2>
-                    <div class="detail-actions">
-                    <button id="open-assign-tenant">assign unit</button>
-                    <form action="/landlord/unit/vacate" method="POST">
-                    <input type="hidden" value="{id}" name="unit_id">
-                    <button type="submit" class="danger-btn">vacate tenant</button>
-                    </form>
-                    </div>
-                    </div>
-                    <div class="b-stat-grid">
-                    <div class="b-stat-box">
-                    <span class="stat-label">rent amount</span>
-                    <span class="stat-value">{rent}</span>
-                    </div>
-                    <div class="b-stat-box">
-                    <span class="stat-label">vacancy status</span>
-                    <span class="stat-value">{status}</span>
-                    </div>
-                    </div>
-                    {notice_html}"#,
-                        id = u.id,
+                        r#"<div class="building-info-bar">
+                          <div class="info-group">
+                            <span class="info-label">unit</span>
+                            <span class="info-value">{number}</span>
+                          </div>
+                          <div class="info-group">
+                            <span class="info-label">rent amount</span>
+                            <span class="info-value">{rent}</span>
+                          </div>
+                          <div class="info-group">
+                            <span class="info-label">status</span>
+                            <span class="info-value">{status}</span>
+                          </div>
+                        </div>
+                        {notice_html}"#,
                         number = u.number,
                         rent = utils::kes(u.rent_amount),
                         status = u.status,
@@ -169,23 +134,44 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                 }
             };
 
-            let units_count = units.len();
+            let units_table = if units.is_empty() {
+                String::new()
+            } else {
+                units.iter().map(|u| {
+                    let active = if Some(u.id) == active_unit { " active-row" } else { "" };
 
-            (units_count, list_html, details_html, active_unit)
+                    let tenant_name = u.tenant_name.clone().unwrap_or("-".into());
+                    format!(
+                        r#"<tr class="{active}">
+                          <td><a href="/landlord/units?id={id}&building_id={b_id}" class="row-link">{number}</a></td>
+                          <td>{tenant_name}</td>
+                          <td class="row-actions">
+                            <button id="open-assign-tenant" data-id="{id}">assign tenant</button>
+                            <form action="/landlord/unit/vacate" method="POST">
+                              <input type="hidden" name="unit_id" value="{id}">
+                              <button type="submit">vacate tenant</button>
+                            </form>
+                          </td>
+                        </tr>"#,
+                        active = active,
+                        id     = u.id,
+                        number = u.number,
+                    )
+                }).collect()
+            };
+
+            (units.len(), unit_header, units_table, active_unit)
         }
     };
 
-    let assign_html = if let Some(id) = data_display.3 {
+    let assign_html = if let Some(id) = active_unit {
         let tenant_options = user_service::get_unassigned_tenant(&state.db)?;
         assign_form(tenant_options, id)
     } else {
         String::new()
     };
 
-    let units_count = data_display.0;
-
     let mut ctx: HashMap<&str, String> = HashMap::new();
-
     ctx.insert("buildings_list", buildings_list);
     ctx.insert(
         "units_count",
@@ -194,9 +180,10 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
             if units_count == 1 { "" } else { "s" }
         ),
     );
-    ctx.insert("units_list", data_display.1);
-    ctx.insert("details", data_display.2);
+    ctx.insert("unit_header", unit_header);
+    ctx.insert("units_table", units_table);
     ctx.insert("assign_units", assign_html);
+
     Ok(Response::html(200, engine::render(UNIT_HTML, &ctx)))
 }
 
@@ -229,11 +216,32 @@ fn assign_form(tenant_options: Vec<(Uuid, String)>, unit_id: Uuid) -> String {
 }
 
 fn building_nav(buildings: &[Building], active: &Option<Uuid>) -> String {
-    buildings.iter().map(|b| {
-        let active_class = if &Some(b.id) == active { " active-building" } else { "" };
-        format!(r#"<a href="/landlord/units?building_id={id}" class="building-tab{active_class}">{name}</a>"#,
-            id = b.id, name = b.name,)
-    }).collect()
+    if buildings.is_empty() {
+        return String::new();
+    }
+
+    let options: String = buildings
+        .iter()
+        .map(|b| {
+            let selected = if &Some(b.id) == active {
+                " selected"
+            } else {
+                ""
+            };
+            format!(
+                r#"<option value="{id}"{selected}>{name}</option>"#,
+                id = b.id,
+                name = b.name
+            )
+        })
+        .collect();
+
+    format!(
+        r#"<select class="building-select"
+            onchange="location.href='/landlord/units?building_id='+this.value">
+            {options}
+        </select>"#
+    )
 }
 
 pub fn notice_form(notice_opt: Option<Notice>) -> String {

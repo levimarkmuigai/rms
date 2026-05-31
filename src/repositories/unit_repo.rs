@@ -116,13 +116,15 @@ pub fn unit_summary_row(
     let mut client = pool.get()?;
     let rows = client.query(
         "SELECT
-        id,
-        rent_amount,
-        unit_number,
-        status
-        FROM units
+        u.id,
+        u.rent_amount,
+        u.unit_number,
+        u.status,
+        usr.name AS tenant_name
+        FROM units u
+        LEFT JOIN users usr ON usr.id = u.tenant_id
         WHERE building_id = $1
-        ORDER BY created_at ASC
+        ORDER BY u.created_at ASC
         ",
         &[&building_id],
     )?;
@@ -134,6 +136,7 @@ pub fn unit_summary_row(
             number: r.get("unit_number"),
             rent_amount: r.get::<_, i32>("rent_amount"),
             status: r.get("status"),
+            tenant_name: r.get("tenant_name"),
         })
         .collect())
 }

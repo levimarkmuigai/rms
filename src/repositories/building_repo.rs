@@ -9,7 +9,7 @@ use crate::{
 pub fn find_by_landlord(pool: &PgPool, landlord_id: &Uuid) -> Result<Vec<Building>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
-        "SELECT * FROM buildings WHERE landlord_id = $1 ORDER BY created_at ASC",
+        "SELECT * FROM buildings WHERE landlord_id = $1 ORDER BY name ASC",
         &[landlord_id],
     )?;
 
@@ -140,7 +140,7 @@ pub fn building_table_rows(
         LEFT JOIN payments p ON p.unit_id = u.id AND p.month_year = $2
         WHERE b.landlord_id = $1
         GROUP BY b.id, b.name
-        ORDER BY b.created_at ASC",
+        ORDER BY b.name ASC",
         &[landlord_id, &month_year],
     )?;
 
@@ -181,7 +181,7 @@ pub fn buildings_overview_rows(
         LEFT JOIN maintenance_requests m ON m.unit_id = u.id AND m.status != $2
         WHERE b.landlord_id = $1
         GROUP BY b.id, b.name, c.id,c.name,c.email
-        ORDER BY b.created_at ASC",
+        ORDER BY b.created_at ASC, b.name ASC",
         &[landlord_id, &request_status],
     )?;
 
