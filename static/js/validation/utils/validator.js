@@ -60,6 +60,18 @@ export function validatePassword(passwordInput, errorSpanId) {
   return true;
 }
 
+export function confirmPassword(passwordInput, confrimInput, errorSpanId) {
+  const password = passwordInput.value.trim();
+  const confrim = confrimInput.value.trim();
+
+  if (password !== confrim) {
+    setErrorState(confrimInput, errorSpanId, "Input does not much password");
+    return false;
+  }
+
+  return true;
+}
+
 export function validateDate(dateInput, errorSpanId) {
   const date = dateInput.value.trim();
 

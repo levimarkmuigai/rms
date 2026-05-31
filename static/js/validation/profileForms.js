@@ -1,4 +1,4 @@
-import { validateEmail, validateNumber, validatePassword, validateText } from "./utils/validator.js";
+import { confirmPassword, validateEmail, validateNumber, validatePassword, validateText } from "./utils/validator.js";
 
 export const profileValidation = () => {
   const firstNameInput = document.getElementById('update-fname');
@@ -6,15 +6,17 @@ export const profileValidation = () => {
   const emailInput = document.getElementById('update-email');
   const numberInput = document.getElementById('update-number');
   const passwordInput = document.getElementById('update-password');
+  const confrimInput = document.getElementById('update-confirm-password')
   const profileForm = document.getElementById('profile-form');
 
-  if (!firstNameInput || !lastNameInput || !emailInput || !numberInput || !passwordInput || !profileForm) return;
+  if (!firstNameInput || !lastNameInput || !emailInput || !numberInput || !passwordInput || !confrimInput || !profileForm) return;
 
   firstNameInput.addEventListener('mouseout', () => validateText(firstNameInput, 'update-fname-error'));
   lastNameInput.addEventListener('mouseout', () => validateText(lastNameInput, 'update-lname-error'));
   emailInput.addEventListener('mouseout', () => validateEmail(emailInput, 'update-email-error'));
   numberInput.addEventListener('mouseout', () => validateNumber(numberInput, 'update-number-error'));
   passwordInput.addEventListener('mouseout', () => validatePassword(passwordInput, 'update-password-error'));
+  confrimInput.addEventListener('mouseout', () => confirmPassword(passwordInput, confrimInput, 'update-confirm-password-error'));
 
   profileForm.addEventListener('submit', (event) => {
     const isFirstNameValid = validateText(firstNameInput, 'update-fname-error');
@@ -22,8 +24,9 @@ export const profileValidation = () => {
     const isEmailValid = validateEmail(emailInput, 'update-email-error');
     const isNumberValid = validateNumber(numberInput, 'update-number-error');
     const isPasswordValid = validatePassword(passwordInput, 'update-password-error');
+    const isConfirmValid = confirmPassword(passwordInput, confrimInput, 'update-confirm-password-error')
 
-    if (!isFirstNameValid || !isLastNameValid || !isEmailValid || !isNumberValid || !isPasswordValid) {
+    if (!isFirstNameValid || !isLastNameValid || !isEmailValid || !isNumberValid || !isPasswordValid || !isConfirmValid) {
       event.preventDefault();
     }
   });
