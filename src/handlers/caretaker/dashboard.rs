@@ -3,11 +3,13 @@ use std::{collections::HashMap, sync::Arc, time::SystemTime};
 use uuid::Uuid;
 
 use crate::{
-    entities::user::{Role, User},
+    entities::{
+        maintenance::RequestPanelRow,
+        user::{Role, User},
+    },
     error::AppError,
-    repositories::user_repo,
+    repositories::{building_repo, maintenance_repo, user_repo},
     server::{auth, form, request::Request, response::Response},
-    services::caretaker::dashboard_services::{self, PanelRequests},
     state::AppState,
     templates::engine,
 };
@@ -16,8 +18,19 @@ const DASH_HTML: &str = include_str!("../../templates/views/caretaker/dashboard.
 
 pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
     let sess = auth::require_role(req, &state.sessions, Role::Caretaker)?;
-    let overview_metrics = dashboard_services::dash_overview(&state.db, &sess.user_id)?;
-    let requests = dashboard_services::request_panel(&state.db, &sess.user_id)?;
+
+    let buildings = building_repo::find_assigned_buildings(&state.db, &sess.user_id)?;
+
+    let selected_building: Option<Uuid> = req.query.get("building_id").and_then(|v| v.parse().ok());
+
+    let active_building = selected_building
+        .or_else(|| buildings.first().map(|(id, _)| *id))
+        .ok_or(AppError::BadRequest("no building assigned".into()))?;
+
+    let overview_metrics =
+        maintenance_repo::dash_overview_row(&state.db, &sess.user_id, &active_building)?;
+
+    let requests = maintenance_repo::request_panel_row(&state.db, &sess.user_id, &active_building)?;
 
     let (pending, inprogress) = request_panel(requests);
 
@@ -29,6 +42,8 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         .split_once(" ")
         .ok_or(AppError::BadRequest("user name not found".into()))?;
 
+    let building_selector = building_selector(&buildings, &active_building);
+
     let mut ctx = HashMap::new();
 
     ctx.insert("profile_fname", first_name.to_string());
@@ -37,6 +52,8 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     ctx.insert("profile_number", user.number.clone());
 
     ctx.insert("caretaker_name", sess.name);
+
+    ctx.insert("building_selector", building_selector);
 
     ctx.insert("pending_count", overview_metrics.0.to_string());
     ctx.insert("inprogress_count", overview_metrics.1.to_string());
@@ -53,7 +70,7 @@ pub fn inprogress(req: &Request, state: &Arc<AppState>) -> Result<Response, AppE
         .get("request_id")
         .and_then(|v| v.parse().ok())
         .ok_or(AppError::BadRequest("request_id missing".into()))?;
-    dashboard_services::to_inprogress(&state.db, &id)?;
+    maintenance_repo::to_inprogress(&state.db, &id)?;
     Ok(Response::redirect("/caretaker"))
 }
 
@@ -64,11 +81,11 @@ pub fn resolve(req: &Request, state: &Arc<AppState>) -> Result<Response, AppErro
         .and_then(|v| v.parse().ok())
         .ok_or(AppError::BadRequest("request_id missing".into()))?;
 
-    dashboard_services::to_resolved(&state.db, &id)?;
+    maintenance_repo::to_resolved(&state.db, &id)?;
     Ok(Response::redirect("/caretaker"))
 }
 
-fn request_panel(r: Vec<PanelRequests>) -> (String, String) {
+fn request_panel(r: Vec<RequestPanelRow>) -> (String, String) {
     let pending_requests: Vec<_> = r.iter().filter(|r| r.status == "pending").collect();
     let inprogress_requests: Vec<_> = r.iter().filter(|r| r.status == "in_progress").collect();
 
@@ -89,7 +106,7 @@ fn request_panel(r: Vec<PanelRequests>) -> (String, String) {
             "#,
                 desc = r.desc,
                 unit = r.unit,
-                timestamp = time_ago(r.timestamp),
+                timestamp = time_ago(r.created_at),
                 request_id = r.id,
             )
         })
@@ -112,13 +129,37 @@ fn request_panel(r: Vec<PanelRequests>) -> (String, String) {
         "#,
                 desc = r.desc,
                 unit = r.unit,
-                timestamp = time_ago(r.timestamp),
+                timestamp = time_ago(r.created_at),
                 request_id = r.id,
             )
         })
         .collect();
 
     (pending_html, inprogress_html)
+}
+
+fn building_selector(buildings: &[(Uuid, String)], active: &Uuid) -> String {
+    if buildings.len() <= 1 {
+        return buildings
+            .first()
+            .map(|(_, name)| format!(r#"<span class="building-label">{name}</span>"#))
+            .unwrap_or_default();
+    }
+
+    let options: String = buildings
+        .iter()
+        .map(|(id, name)| {
+            let selected = if id == active { " selected" } else { "" };
+            format!(r#"<option value="{id}"{selected}>{name}</option>"#)
+        })
+        .collect();
+
+    format!(
+        r#"<select class="building-select"
+            onchange="location.href='/caretaker?building_id='+this.value">
+            {options}
+        </select>"#
+    )
 }
 
 fn time_ago(t: SystemTime) -> String {

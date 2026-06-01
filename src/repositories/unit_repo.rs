@@ -165,7 +165,7 @@ pub fn tenant_header_row(
 pub fn count_by_building(pool: &PgPool, building_id: &Uuid) -> Result<i64, AppError> {
     let mut client = pool.get()?;
     let row = client.query_one(
-        "SELECT COUNT(*) from units WHERE building_id= $1",
+        "SELECT COUNT(*) from units WHERE building_id = $1",
         &[building_id],
     )?;
 

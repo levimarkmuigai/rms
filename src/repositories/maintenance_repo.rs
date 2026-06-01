@@ -16,7 +16,11 @@ pub fn insert(pool: &PgPool, unit_id: &Uuid, tenant_id: &Uuid, desc: &str) -> Re
     Ok(())
 }
 
-pub fn dash_overview_row(pool: &PgPool, caretaker_id: &Uuid) -> Result<(i64, i64, i64), AppError> {
+pub fn dash_overview_row(
+    pool: &PgPool,
+    caretaker_id: &Uuid,
+    building_id: &Uuid,
+) -> Result<(i64, i64, i64), AppError> {
     let mut client = pool.get()?;
 
     let row = client.query_one(
@@ -28,8 +32,9 @@ pub fn dash_overview_row(pool: &PgPool, caretaker_id: &Uuid) -> Result<(i64, i64
         JOIN units u ON u.id = r.unit_id
         JOIN buildings b ON b.id = u.building_id
         JOIN caretaker_buildings cb ON cb.building_id = b.id
-        WHERE cb.caretaker_id = $1 AND cb.released_at IS NULL",
-        &[&caretaker_id],
+        WHERE cb.caretaker_id = $1 AND cb.released_at IS NULL
+        AND b.id = $2",
+        &[caretaker_id, building_id],
     )?;
 
     Ok((
@@ -39,9 +44,10 @@ pub fn dash_overview_row(pool: &PgPool, caretaker_id: &Uuid) -> Result<(i64, i64
     ))
 }
 
-pub fn find_panel_row(
+pub fn request_panel_row(
     pool: &PgPool,
     caretaker_id: &Uuid,
+    building_id: &Uuid,
 ) -> Result<Vec<RequestPanelRow>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(
@@ -53,9 +59,10 @@ pub fn find_panel_row(
         JOIN caretaker_buildings cb On cb.building_id = b.id
         WHERE cb.caretaker_id = $1
         AND cb.released_at IS NULL
+        AND cb.building_id = $2
         AND r.status != 'resolved'
         ORDER BY r.created_at ASC",
-        &[&caretaker_id],
+        &[caretaker_id, building_id],
     )?;
 
     Ok(rows
@@ -70,7 +77,7 @@ pub fn find_panel_row(
         .collect())
 }
 
-pub fn pending_inprogress(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+pub fn to_inprogress(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
     let mut client = pool.get()?;
 
     client.execute(
@@ -83,7 +90,7 @@ pub fn pending_inprogress(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
     Ok(())
 }
 
-pub fn inprogress_resolved(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+pub fn to_resolved(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
     let mut client = pool.get()?;
 
     client.execute(

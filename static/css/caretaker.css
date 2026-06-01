@@ -96,7 +96,7 @@ aside {
 
 header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
@@ -109,6 +109,34 @@ header h1 {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
+}
+
+.building-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.building-select {
+  background: var(--light-sunken);
+  background-size: 14px;
+  background-position: right 12px center;
+  border: 1px solid var(--light-background);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 6px 34px 6px 14px;
+  transition: all 150ms ease;
+}
+
+.building-select:hover {
+  background: var(--ink);
+  color: var(--light-card);
+  border-color: var(--ink);
 }
 
 .overview-row {
