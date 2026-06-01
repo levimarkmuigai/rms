@@ -1,7 +1,10 @@
 use uuid::Uuid;
 
 use crate::{
-    db::PgPool, entities::building::Building, error::AppError, repositories::building_repo,
+    db::PgPool,
+    entities::building::Building,
+    error::AppError,
+    repositories::{building_repo, unit_repo},
 };
 
 pub fn add(
@@ -36,6 +39,25 @@ pub fn remove(pool: &PgPool, landlord_id: &Uuid, id: &Uuid) -> Result<(), AppErr
 }
 
 pub fn assign(pool: &PgPool, caretaker_id: &Uuid, id: &Uuid) -> Result<(), AppError> {
+    let new_buildings_units = unit_repo::count_by_building(pool, id)?;
+    let current_assignments = building_repo::find_by_caretaker(pool, caretaker_id)?;
+
+    if !current_assignments.is_empty() {
+        if new_buildings_units >= 20 {
+            return Err(AppError::BadRequest(
+                "building with 20 or more units require a dedicated caretaker".into(),
+            ));
+        }
+        for assigned_id in &current_assignments {
+            let count = unit_repo::count_by_building(pool, assigned_id)?;
+            if count >= 20 {
+                return Err(AppError::BadRequest(
+                    "caretaker already manages a large building cannot take additional assignments"
+                        .into(),
+                ));
+            }
+        }
+    }
     if building_repo::caretaker_is_assigned(pool, id)? {
         return Err(AppError::BadRequest("building already assigned".into()));
     }

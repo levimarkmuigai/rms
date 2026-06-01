@@ -6,9 +6,9 @@ use crate::{
     entities::user::Role,
     error::AppError,
     handlers::landlord::utils,
-    repositories::{activity_repo, building_repo},
+    repositories::{activity_repo, building_repo, user_repo},
     server::{auth, form, request::Request, response::Response},
-    services::{landlord::building_service, user_service},
+    services::landlord::building_service,
     state::AppState,
     templates::engine,
 };
@@ -90,7 +90,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         .unwrap_or_default();
 
     let assign_html = if let Some(b_id) = active_id {
-        let caretaker_options = user_service::get_unassigned_caretakers(&state.db)?;
+        let caretaker_options = user_repo::find_available_caretakers(&state.db)?;
         assign_caretaker_form(caretaker_options, b_id)
     } else {
         String::new()

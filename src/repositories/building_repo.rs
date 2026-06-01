@@ -23,6 +23,16 @@ pub fn find_by_landlord(pool: &PgPool, landlord_id: &Uuid) -> Result<Vec<Buildin
         .collect())
 }
 
+pub fn find_by_caretaker(pool: &PgPool, caretaker_id: &Uuid) -> Result<Vec<Uuid>, AppError> {
+    let mut client = pool.get()?;
+    let rows = client.query(
+        "SELECT building _id FROM caretaker_buildings
+        WHERE caretaker_id = $1 AND released_at IS NULL",
+        &[caretaker_id],
+    )?;
+
+    Ok(rows.iter().map(|r| r.get("building_id")).collect())
+}
 pub fn find_by_id(pool: &PgPool, id: &Uuid) -> Result<Option<Building>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query(

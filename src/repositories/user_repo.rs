@@ -82,19 +82,22 @@ pub fn find_unassigned_tenants(pool: &PgPool) -> Result<Vec<(Uuid, String)>, App
         .collect::<Vec<(Uuid, String)>>())
 }
 
-pub fn find_unassigned_caretakers(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
+pub fn find_available_caretakers(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {
     let mut client = pool.get()?;
-    let role = "caretaker";
     let rows = client.query(
         "SELECT u.id, u.email
         FROM users u
-        WHERE role = $1
+        WHERE role = 'caretaker'
         AND NOT EXISTS(
-            SELECT 1 FROM caretaker_buildings bu
-            WHERE bu.caretaker_id = u.id
-            AND bu.released_at IS NULL
+            SELECT 1 FROM caretaker_buildings cb
+            WHERE cb.caretaker_id = u.id
+            AND cb.released_at IS NULL
+            AND (
+            SELECT COUNT(*) FROM units
+            WHERE units.building_id = cb.building_id
+            ) >= 20
             )",
-        &[&role],
+        &[],
     )?;
 
     Ok(rows
