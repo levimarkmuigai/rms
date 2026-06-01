@@ -1,11 +1,16 @@
 use std::{collections::HashMap, sync::Arc, time::SystemTime};
 
 use crate::{
-    entities::user::{Role, User},
+    entities::{
+        maintenance::ViewRequest,
+        notice::NoticeDisplay,
+        user::{Role, User},
+    },
     error::AppError,
-    repositories::{notice_repo, user_repo},
+    handlers::landlord::utils,
+    repositories::{maintenance_repo, notice_repo, user_repo},
     server::{auth, request::Request, response::Response},
-    services::tenant::dashboard_services::{self, PaymentActivity, RequestActivity},
+    services::tenant::dashboard_services::{self, PaymentActivity},
     state::AppState,
     templates::engine,
 };
@@ -16,7 +21,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     let sess = auth::require_role(req, &state.sessions, Role::Tenant)?;
     let header_data = dashboard_services::header_data(&state.db, &sess.user_id)?;
 
-    let requests = dashboard_services::request_activity(&state.db, &sess.user_id)?;
+    let requests = maintenance_repo::request_view_row(&state.db, &sess.user_id)?;
     let payments = dashboard_services::payment_activity(&state.db, &sess.user_id)?;
 
     let notice = notice_repo::tenant_view(&state.db, &sess.user_id)?;
@@ -43,7 +48,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     ctx.insert("tenant_name", sess.name);
     ctx.insert("unit_name", header_data.0);
     ctx.insert("apartment_name", header_data.1);
-    ctx.insert("rent_amount", format!("KES {}", header_data.2));
+    ctx.insert("rent_amount", utils::kes(header_data.2));
 
     ctx.insert("request_card", request_html);
     ctx.insert("payment_card", payments_html);
@@ -54,7 +59,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     Ok(Response::html(200, engine::render(DASH_HTML, &ctx)))
 }
 
-fn request_activity(r: Vec<RequestActivity>) -> String {
+fn request_activity(r: Vec<ViewRequest>) -> String {
     r.into_iter()
         .map(|r| {
             format!(
@@ -65,8 +70,8 @@ fn request_activity(r: Vec<RequestActivity>) -> String {
          <span class="activity-status">{status}</span>
           </div>
         "#,
-                desc = r.desc,
-                timestamp = time_ago(r.timestamp),
+                desc = r.description,
+                timestamp = time_ago(r.submitted_at),
                 status = r.status
             )
         })
@@ -92,20 +97,27 @@ fn payment_activity(p: Vec<PaymentActivity>) -> String {
         .collect()
 }
 
-fn notice_details(n: Vec<(String, String, SystemTime)>) -> String {
+fn notice_details(n: Vec<NoticeDisplay>) -> String {
     n.iter()
         .map(|n| {
-            let submitted_at = time_ago(n.2);
+            let submitted_at = time_ago(n.submitted_at);
+            let reason_html = match (&n.status as &str, &n.reason) {
+                ("rejected", Some(reason)) => {
+                    format!(r#"<span class="rejection-reason">{reason}</span>"#)
+                }
+                _ => String::new(),
+            };
             format!(
                 r#"
        <div class="vacancy-card">
           <span class="vacation-date">move-out: {date}</span>
           <span class="submitted-at">{submitted_at}</span>
+          {reason_html}
           <span class="vacation-status">{status}</span>
         </div>
         "#,
-                date = n.0,
-                status = n.1
+                date = n.date,
+                status = n.status
             )
         })
         .collect()

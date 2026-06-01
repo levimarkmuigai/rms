@@ -22,20 +22,6 @@
         <span class="rent-amount">{{ rent_amount }}</span>
       </header>
 
-      <div class="recent-activity">
-        <h2 class="section-header">recent activity</h2>
-        <div class="activity-row">
-          <div class="activity-container">
-            <h3>maintenance</h3>
-            {{ request_card }}
-          </div>
-          <div class="activity-container">
-            <h3>payments</h3>
-            {{ payment_card }}
-          </div>
-        </div>
-      </div>
-
       <div class="action-container">
         <h2 class="section-header">actions</h2>
         <div class="btn-row">
@@ -46,6 +32,20 @@
           <div class="action-btn">
             <button id="pay-btn">pay rent</button>
             <span>submit payment</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recent-activity">
+        <h2 class="section-header">recent activity</h2>
+        <div class="activity-row">
+          <div class="activity-container">
+            <h3>maintenance</h3>
+            {{ request_card }}
+          </div>
+          <div class="activity-container">
+            <h3>payments</h3>
+            {{ payment_card }}
           </div>
         </div>
       </div>
@@ -89,7 +89,7 @@
     </div>
 
     <div id="profile-modal" class="modal-overlay card-hidden">
-      <div class="modal-card">
+      <div class="modal-card" onclick="event.stopPropagation()">
         <form action="/update_profile" method="POST" id="profile-form">
           <p class="modal-title">personal details</p>
           <div class="input-row">

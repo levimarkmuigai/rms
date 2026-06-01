@@ -93,17 +93,19 @@ fn request_panel(r: Vec<RequestPanelRow>) -> (String, String) {
         .into_iter()
         .map(|r| {
             format!(
-                r#"
-            <div class="request-card-body">
-            <span class="request-desc">{desc}</span>
-            <span class="req-unit">{unit}</span>
-            <span class="req-timestamp">{timestamp}</span>
-            </div>
-            <form action="/caretaker/request/start" method="POST">
-            <input type="hidden" name="request_id" value="{request_id}">
-            <button type="submit">start</button>
-            </form>
-            "#,
+                r#"<div class="request-card">
+              <div class="request-view">
+                <div class="request-card-body">
+                  <span class="request-desc">{desc}</span>
+                  <span class="req-unit">{unit}</span>
+                  <span class="req-timestamp">{timestamp}</span>
+                </div>
+                <form action="/caretaker/request/start" method="POST">
+                  <input type="hidden" name="request_id" value="{request_id}">
+                  <button type="submit">start</button>
+                </form>
+              </div>
+            </div>"#,
                 desc = r.desc,
                 unit = r.unit,
                 timestamp = time_ago(r.created_at),
@@ -116,17 +118,19 @@ fn request_panel(r: Vec<RequestPanelRow>) -> (String, String) {
         .into_iter()
         .map(|r| {
             format!(
-                r#"
-        <div class="request-card-body">
-        <span class="request-desc">{desc}</span>
-        <span class="req-unit">{unit}</span>
-        <span class="req-timestamp">{timestamp}</span>
-        </div>
-        <form action="/caretaker/request/resolve" method="POST">
-        <input type="hidden" name="request_id" value="{request_id}">
-        <button type="submit">resolve</button>
-        </form>
-        "#,
+                r#"<div class="request-card">
+              <div class="request-view">
+                <div class="request-card-body">
+                  <span class="request-desc">{desc}</span>
+                  <span class="req-unit">{unit}</span>
+                  <span class="req-timestamp">{timestamp}</span>
+                </div>
+                <form action="/caretaker/request/resolve" method="POST">
+                  <input type="hidden" name="request_id" value="{request_id}">
+                  <button type="submit">resolve</button>
+                </form>
+              </div>
+            </div>"#,
                 desc = r.desc,
                 unit = r.unit,
                 timestamp = time_ago(r.created_at),

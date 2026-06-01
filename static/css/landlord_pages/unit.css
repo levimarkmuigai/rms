@@ -84,7 +84,7 @@
 }
 
 .notice-btn:hover {
-  background: #A0A0A0;
+  background: var(--ink);
   color: var(--light-card);
   border-color: #A0A0A0;
 }
@@ -109,4 +109,44 @@
   background: var(--ink);
   color: var(--light-card);
   border-color: var(--ink);
+}
+
+.reject-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reject-reason {
+  background: var(--light-sunken);
+  border: 1px solid var(--light-border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--ink);
+  resize: none;
+  outline: none;
+  width: 180px;
+  transition: border-color 200ms ease;
+}
+
+.reject-reason:focus {
+  border-color: var(--ink);
+}
+
+.notice-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notice-btns {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.reject-reason {
+  width: 100%;
 }

@@ -111,7 +111,9 @@ pub fn request_view_row(pool: &PgPool, tenant_id: &Uuid) -> Result<Vec<ViewReque
         FROM maintenance_requests r
         JOIN units u ON u.id = r.unit_id
         JOIN tenant_units tu ON tu.unit_id = u.id
-        WHERE tu.tenant_id = $1 AND vacated_at IS NULL",
+        WHERE tu.tenant_id = $1 
+        AND vacated_at IS NULL
+        AND r.status != 'resolved' ",
         &[tenant_id],
     )?;
 

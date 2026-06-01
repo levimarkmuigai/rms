@@ -1,8 +1,10 @@
-use std::time::SystemTime;
-
 use uuid::Uuid;
 
-use crate::{db::PgPool, entities::notice::Notice, error::AppError};
+use crate::{
+    db::PgPool,
+    entities::notice::{NoticeDisplay, NoticeForm},
+    error::AppError,
+};
 
 pub fn insert(
     pool: &PgPool,
@@ -36,20 +38,22 @@ pub fn approve(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
     Ok(())
 }
 
-pub fn reject(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+pub fn reject(pool: &PgPool, id: &Uuid, reason: &str) -> Result<(), AppError> {
     let mut client = pool.get()?;
 
     client.execute(
-        "UPDATE vacation_notices SET status = 'rejected'
+        "UPDATE vacation_notices
+        SET status = 'rejected',
+        rejection_reason = $2
         WHERE id = $1",
-        &[id],
+        &[id, &reason],
     )?;
 
     tracing::debug!(%id, "notice rejected");
     Ok(())
 }
 
-pub fn find_pending(pool: &PgPool, unit_id: &Uuid) -> Result<Option<Notice>, AppError> {
+pub fn find_pending(pool: &PgPool, unit_id: &Uuid) -> Result<Option<NoticeForm>, AppError> {
     let mut client = pool.get()?;
 
     let row = client.query_opt(
@@ -59,7 +63,7 @@ pub fn find_pending(pool: &PgPool, unit_id: &Uuid) -> Result<Option<Notice>, App
         &[unit_id],
     )?;
 
-    Ok(row.map(|r| Notice {
+    Ok(row.map(|r| NoticeForm {
         id: r.get("id"),
         unit_id: r.get("unit_id"),
         submitted_at: r.get("submitted_at"),
@@ -67,14 +71,11 @@ pub fn find_pending(pool: &PgPool, unit_id: &Uuid) -> Result<Option<Notice>, App
     }))
 }
 
-pub fn tenant_view(
-    pool: &PgPool,
-    tenant_id: &Uuid,
-) -> Result<Vec<(String, String, SystemTime)>, AppError> {
+pub fn tenant_view(pool: &PgPool, tenant_id: &Uuid) -> Result<Vec<NoticeDisplay>, AppError> {
     let mut client = pool.get()?;
 
     let rows = client.query(
-        "SELECT date, status, submitted_at
+        "SELECT date, status, submitted_at, rejection_reason
         FROM vacation_notices
         WHERE submitted_by = $1",
         &[tenant_id],
@@ -82,6 +83,11 @@ pub fn tenant_view(
 
     Ok(rows
         .into_iter()
-        .map(|r| (r.get("date"), r.get("status"), r.get("submitted_at")))
+        .map(|r| NoticeDisplay {
+            date: r.get("date"),
+            status: r.get("status"),
+            submitted_at: r.get("submitted_at"),
+            reason: r.get("rejection_reason"),
+        })
         .collect())
 }

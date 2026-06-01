@@ -8,7 +8,8 @@ pub fn payment_view_row(pool: &PgPool, tenant_id: &Uuid) -> Result<Vec<PaymentVi
         "SELECT p.amount, p.month_year, p.status
         FROM payments p
         JOIN tenant_units tu ON tu.unit_id = p.unit_id
-        WHERE tu.tenant_id = $1",
+        WHERE tu.tenant_id = $1
+        ORDER BY paid_at DESC",
         &[tenant_id],
     )?;
 

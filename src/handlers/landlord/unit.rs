@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc};
 use uuid::Uuid;
 
 use crate::{
-    entities::{building::Building, notice::Notice, unit::UnitSummaryRow, user::Role},
+    entities::{building::Building, notice::NoticeForm, unit::UnitSummaryRow, user::Role},
     error::AppError,
     handlers::landlord::utils,
     repositories::{activity_repo, notice_repo, unit_repo},
@@ -244,27 +244,35 @@ fn building_nav(buildings: &[Building], active: &Option<Uuid>) -> String {
     )
 }
 
-pub fn notice_form(notice_opt: Option<Notice>) -> String {
+pub fn notice_form(notice_opt: Option<NoticeForm>) -> String {
     notice_opt
         .map(|n| {
             format!(
                 r#"<div class="notice-card">
-                  <div class="notice-body">
-                    <span class="notice-label">vacancy notice</span>
-                    <span class="notice-date">move-out date {date}</span>
-                    <span class="notice-meta">submitted {submitted_at}</span>
-                  </div>
-                  <div class="notice-actions">
-                    <form action="/landlord/vacancy/approve" method="POST">
-                      <input type="hidden" name="notice_id" value="{notice_id}">
-                      <button type="submit" class="notice-btn">approve</button>
-                    </form>
-                    <form action="/landlord/vacancy/reject" method="POST">
-                      <input type="hidden" name="notice_id" value="{notice_id}">
-                      <button type="submit" class="notice-btn danger-btn">reject</button>
-                    </form>
-                  </div>
-                </div>"#,
+            <div class="notice-body">
+    <span class="notice-label">vacancy notice</span>
+    <span class="notice-date">move-out date {date}</span>
+    <span class="notice-meta">submitted {submitted_at}</span>
+  </div>
+  <div class="notice-actions">
+    <div class="notice-btns">
+      <form action="/landlord/vacancy/approve" method="POST">
+        <input type="hidden" name="notice_id" value="{notice_id}">
+        <button type="submit" class="notice-btn">approve</button>
+      </form>
+      <form id="reject-{notice_id}" action="/landlord/vacancy/reject" method="POST" class="reject-form">
+        <input type="hidden" name="notice_id" value="{notice_id}">
+        <button type="submit" class="notice-btn danger-btn">reject</button>
+      </form>
+    </div>
+    <textarea
+      name="reason"
+      form="reject-{notice_id}"
+      class="reject-reason"
+      placeholder="reason for rejection"
+      rows="2"></textarea>
+  </div>
+</div>"#,
                 date = n.date,
                 submitted_at = utils::time_ago(n.submitted_at),
                 notice_id = n.id,
@@ -293,6 +301,8 @@ pub fn reject_notice(req: &Request, state: &Arc<AppState>) -> Result<Response, A
         .and_then(|v| v.parse().ok())
         .ok_or(AppError::BadRequest("notice_id missing".into()))?;
 
-    notice_repo::reject(&state.db, &notice_id)?;
+    let reason = f.get("reason").cloned().unwrap_or_default();
+
+    notice_repo::reject(&state.db, &notice_id, &reason)?;
     Ok(Response::redirect("/landlord/units"))
 }
