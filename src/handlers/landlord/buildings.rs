@@ -16,12 +16,13 @@ use crate::{
 const BUILDINGS_HTML: &str = include_str!("../../templates/views/landlord/buildings.html");
 
 fn current_month_year() -> String {
-    chrono::Utc::now().format("%Y-%m").to_string()
+    chrono::Utc::now().format("%B %Y").to_string()
 }
 
 pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
     let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
     let month_year = current_month_year();
+    tracing::debug!(%month_year);
     let table_data = building_repo::building_table_rows(&state.db, &sess.user_id, &month_year)?;
 
     let selected_id: Option<Uuid> = req.query.get("id").and_then(|v| v.parse().ok());
@@ -57,27 +58,27 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
             } else {
                 ""
             };
+
+            let caretaker = b.caretaker.clone().unwrap_or("not assigned".into());
             format!(
                 r#"<tr class="{active}">
-        <td><a href="/landlord/buildings?id={id}" class="row-link">{name}</a></td>
-        <td>{collected}</td>
-        <td>{occupied}</td>
-        <td>{vacant}</td>
-        <td class="row-actions">
-        <button class="open-assign-caretaker" id="open-assign-caretaker" data-id="{id}">assign caretaker</button>
-        <button class="open-add-unit" id="open-add-unit" data-id="{id}">add unit</button>
-        <a href="/landlord/units?building_id={id}" class="row-link">view units</a>
-        <input type="hidden" name="building_id" value="{id}">
-        <button type="submit">delete building</button>
-        </form>
-        </td>
-        </tr>"#,
-                active = active,
-                id = b.id,
-                name = b.name,
-                collected = utils::kes(b.collected),
-                occupied = b.occupied,
-                vacant = b.vacant,
+                <td><a href="/landlord/buildings?id={id}" class="row-link">{name}</a></td>
+                <td>{collected}</td>
+                <td>{occupied}</td>
+                <td>{vacant}</td>
+                <td>{caretaker}</td>
+                <td class="row-actions">
+                <button class="open-assign-caretaker" id="open-assign-caretaker" data-id="{id}">assign caretaker</button>
+                <button class="open-add-unit" id="open-add-unit" data-id="{id}">add unit</button>
+                <a href="/landlord/units?building_id={id}" class="row-link">view units</a>
+                </td>
+                </tr>"#,
+                    active = active,
+                    id = b.id,
+                    name = b.name,
+                    collected = utils::kes(b.collected),
+                    occupied = b.occupied,
+                    vacant = b.vacant,
             )
         })
         .collect();

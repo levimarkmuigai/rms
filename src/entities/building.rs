@@ -16,6 +16,7 @@ pub struct BuildingTableRow {
     pub owner: String,
     pub location: String,
     pub city: String,
+    pub caretaker: Option<String>,
 }
 
 pub struct BuildingOverviewRow {

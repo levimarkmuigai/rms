@@ -162,12 +162,21 @@ pub fn building_table_rows(
         b.city,
         COUNT(u.id) FILTER (WHERE u.status = 'vacant') AS vacant,
         COUNT(u.id) FILTER (WHERE u.status = 'occupied') AS occupied,
-        CAST(COALESCE(SUM(p.amount), 0) AS INT) AS collected
+        CAST(COALESCE(SUM(p.amount), 0) AS INT) AS collected,
+        usr.name AS caretaker
         FROM buildings b
         LEFT JOIN units u ON u.building_id = b.id
         LEFT JOIN payments p ON p.unit_id = u.id AND p.month_year = $2
+        LEFT JOIN caretaker_buildings cb ON cb.building_id = b.id
+        LEFT JOIN users usr ON usr.id = cb.caretaker_id
         WHERE b.landlord_id = $1
-        GROUP BY b.id, b.name
+        GROUP BY
+        b.id,
+        b.name,
+        b.owner,
+        b.location,
+        b.city,
+        usr.name
         ORDER BY b.name ASC",
         &[landlord_id, &month_year],
     )?;
@@ -183,6 +192,7 @@ pub fn building_table_rows(
             owner: r.get("owner"),
             location: r.get("location"),
             city: r.get("city"),
+            caretaker: r.get("caretaker"),
         })
         .collect())
 }
