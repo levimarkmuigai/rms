@@ -66,8 +66,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         <td class="row-actions">
         <button class="open-assign-caretaker" id="open-assign-caretaker" data-id="{id}">assign caretaker</button>
         <button class="open-add-unit" id="open-add-unit" data-id="{id}">add unit</button>
-        <form action="/delete-building" method="POST"
-        onsubmit="return confirm('permanently delete this building?');">
+        <a href="/landlord/units?building"={id}" class="row-link">view units</a>
         <input type="hidden" name="building_id" value="{id}">
         <button type="submit">delete building</button>
         </form>
@@ -187,26 +186,21 @@ fn add_building_form() -> String {
 
 fn add_unit_form(building_id: &Uuid) -> String {
     format!(
-        "
-    <form action=\"/landlord/units\" method=\"POST\" id=\"add-unit-form\">
-        <fieldset class=\"form-group\">
-          <legend> Unit Details</legend>
-          <input type=\"hidden\" name=\"building-id\" value=\"{}\">
-          <div class=\"input-container\">
-            <label for=\"unit-number\">Unit Number</label>
-            <input type=\"text\" name=\"unit-number\" id=\"unit-number\">
-            <span class=\"error-message\" id=\"unit-number-error\"></span>
+        r#"<form action="/landlord/units" method="POST" id="add-unit-form">
+          <p class="modal-title">unit details</p>
+          <input type="hidden" name="building-id" value="{building_id}">
+          <div class="input-container">
+            <label for="unit-number">unit number</label>
+            <input type="text" name="unit-number" id="unit-number">
+            <span class="error-message" id="unit-number-error"></span>
           </div>
-          <div class=\"input-container\">
-            <label for=\"rent-amount\">Rent Amount</label>
-            <input type=\"text\" name=\"rent-amount\" id=\"rent-amount\">
-            <span class=\"error-message\" id=\"rent-amount-error\"></span>
+          <div class="input-container">
+            <label for="rent-amount">rent amount</label>
+            <input type="text" name="rent-amount" id="rent-amount">
+            <span class="error-message" id="rent-amount-error"></span>
           </div>
-        </fieldset>
-        <button type=\"submit\" class=\"form-button\">Add Unit</button>
-      </form>
-    ",
-        building_id
+          <button type="submit" class="form-button">add unit</button>
+        </form>"#
     )
 }
 
@@ -217,23 +211,17 @@ fn assign_caretaker_form(caretakers: Vec<(Uuid, String)>, building_id: Uuid) -> 
         .collect();
 
     format!(
-        r#"
-    <form action="/landlord/building/assign" method="POST" class="inline-form">
-    <fieldset class="form-group">
-    <legend>Assign Caretaker</legend>
-    <div class="input-container">
-    <input type="hidden" name="building_id" value="{building_id}">
-    </div>
-    <div class="input-container">
-    <label for="caretaker">caretaker</label>
-    <select id="caretaker" name="caretaker_id">
-    <option value="" disabled selected>select caretaker</option>
-    {caretaker_options}
-    </select>
-    </div>
-    </fieldset>
-    <button type="submit" class="form-button">Assign</button>
-    </form>
-    "#
+        r#"<form action="/landlord/building/assign" method="POST">
+          <p class="modal-title">assign caretaker</p>
+          <input type="hidden" name="building_id" value="{building_id}">
+          <div class="input-container">
+            <label for="caretaker">caretaker</label>
+            <select id="caretaker" name="caretaker_id">
+              <option value="" disabled selected>select caretaker</option>
+              {caretaker_options}
+            </select>
+          </div>
+          <button type="submit" class="form-button">assign</button>
+        </form>"#
     )
 }
