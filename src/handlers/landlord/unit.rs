@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc};
 use uuid::Uuid;
 
 use crate::{
-    entities::{building::Building, notice::NoticeForm, unit::UnitSummaryRow, user::Role},
+    entities::{notice::NoticeForm, unit::UnitSummaryRow, user::Role},
     error::AppError,
     handlers::landlord::utils,
     repositories::{activity_repo, notice_repo, unit_repo},
@@ -79,8 +79,6 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     let buildings = building_service::find_by_lanlord(&state.db, &sess.user_id)?;
 
     let selected_building: Option<Uuid> = req.query.get("building_id").and_then(|v| v.parse().ok());
-    let active_building = selected_building.or_else(|| buildings.first().map(|b| b.id));
-    let buildings_list = building_nav(&buildings, &active_building);
 
     let selected_unit: Option<Uuid> = req.query.get("id").and_then(|v| v.parse().ok());
 
@@ -92,7 +90,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         })
         .collect::<Result<_, AppError>>()?;
 
-    let (units_count, unit_header, units_table, active_unit) = match active_building {
+    let (units_count, unit_header, units_table, active_unit) = match selected_building {
         None => (
             0,
             "<p class=\"empty-detail\">select a building to see units.</p>".into(),
@@ -172,7 +170,6 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     };
 
     let mut ctx: HashMap<&str, String> = HashMap::new();
-    ctx.insert("buildings_list", buildings_list);
     ctx.insert(
         "units_count",
         format!(
@@ -212,35 +209,6 @@ fn assign_form(tenant_options: Vec<(Uuid, String)>, unit_id: Uuid) -> String {
     <button type="submit" class="form-button">Assign</button>
     </form>
     "#
-    )
-}
-
-fn building_nav(buildings: &[Building], active: &Option<Uuid>) -> String {
-    if buildings.is_empty() {
-        return String::new();
-    }
-
-    let options: String = buildings
-        .iter()
-        .map(|b| {
-            let selected = if &Some(b.id) == active {
-                " selected"
-            } else {
-                ""
-            };
-            format!(
-                r#"<option value="{id}"{selected}>{name}</option>"#,
-                id = b.id,
-                name = b.name
-            )
-        })
-        .collect();
-
-    format!(
-        r#"<select class="building-select"
-            onchange="location.href='/landlord/units?building_id='+this.value">
-            {options}
-        </select>"#
     )
 }
 

@@ -66,7 +66,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         <td class="row-actions">
         <button class="open-assign-caretaker" id="open-assign-caretaker" data-id="{id}">assign caretaker</button>
         <button class="open-add-unit" id="open-add-unit" data-id="{id}">add unit</button>
-        <a href="/landlord/units?building"={id}" class="row-link">view units</a>
+        <a href="/landlord/units?building_id={id}" class="row-link">view units</a>
         <input type="hidden" name="building_id" value="{id}">
         <button type="submit">delete building</button>
         </form>
