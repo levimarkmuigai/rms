@@ -1,15 +1,13 @@
 :root {
-  --light-base: #F3F3F3;
-  --light-main: #F0F0F0;
-  --light-card: #FFFFFF;
-  --light-surface: #F3F3F3;
-  --light-sunken:  #E8E8E8;
+  --light-base:   #F3F3F3;
+  --light-main:   #F0F0F0;
+  --light-card:   #FFFFFF;
+  --light-sunken: #E8E8E8;
   --light-border: #E0E0E0;
-  --ink: #111111;
-  --text-muted: #111111;
+  --ink:          #111111;
+  --text-muted:   #444444;
   --shadow-color: 170, 170, 170;
 }
-
 
 body {
   background-color: var(--light-base);
@@ -43,26 +41,28 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 2rem 1.5rem;
+  gap: 16px;
+  padding: 2.5rem 2rem;
   box-sizing: border-box;
   border: 1px solid var(--light-border);
   border-radius: 24px;
 }
 
 .introduction h1 {
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: -0.03em;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
 .introduction p {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.7;
   color: var(--text-muted);
   text-align: center;
+  max-width: 480px;
+  text-transform: capitalize;
 }
 
 .button-group {
@@ -70,25 +70,26 @@ body {
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  padding: 0.5rem 0;
 }
 
 #signup-btn,
 #login-btn {
   background: transparent;
   border: none;
-  font-size: 12px;
+  font-size: 15px;
   font-family: inherit;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--ink);
   cursor: pointer;
   transition: color 200ms ease, transform 200ms ease;
 }
 
 #signup-btn:hover,
 #login-btn:hover {
-  color: #A0A0A0;
+  color: var(--text-muted);
   transform: scale(0.95);
 }
 
