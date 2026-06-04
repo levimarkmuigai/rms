@@ -19,10 +19,10 @@ pub fn show(_req: &Request, state: &Arc<AppState>) -> Result<Response, AppError>
         .map(|l| {
             format!(
                 "<tr>
-          <td class=\"email\">{email}</td>
-          <td>{action}</td>
-          <td class=\"timestamp\">{when}</td>
-        </tr>",
+            <td class=\"email\">{email}</td>
+            <td>{action}</td>
+            <td class=\"timestamp\">{when}</td>
+            </tr>",
                 email = l.email,
                 action = l.action,
                 when = time_ago(l.created_at),

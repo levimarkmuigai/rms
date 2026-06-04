@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{
     db::PgPool,
-    entities::building::{Building, BuildingOverviewRow, BuildingTableRow},
+    entities::building::{Building, BuildingOverviewRow, BuildingTableRow, BuildingView},
     error::AppError,
 };
 
@@ -32,6 +32,21 @@ pub fn find_by_caretaker(pool: &PgPool, caretaker_id: &Uuid) -> Result<Vec<Uuid>
     )?;
 
     Ok(rows.iter().map(|r| r.get("building_id")).collect())
+}
+
+pub fn find_all(pool: &PgPool) -> Result<Vec<BuildingView>, AppError> {
+    let mut client = pool.get()?;
+
+    let rows = client.query("SELECT id, name, owner FROM buildings ORDER BY name", &[])?;
+
+    Ok(rows
+        .iter()
+        .map(|r| BuildingView {
+            id: r.get("id"),
+            name: r.get("name"),
+            owner: r.get("owner"),
+        })
+        .collect())
 }
 
 pub fn find_assigned_buildings(
@@ -253,13 +268,10 @@ pub fn insert(
     Ok(())
 }
 
-pub fn delete(pool: &PgPool, landlord_id: &Uuid, id: &Uuid) -> Result<(), AppError> {
+pub fn delete(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
     let mut client = pool.get()?;
 
-    client.execute(
-        "DELETE FROM buildings WHERE id = $1 AND landlord_id = $2",
-        &[id, landlord_id],
-    )?;
+    client.execute("DELETE FROM buildings WHERE id = $1", &[id])?;
     tracing::debug!(%id, "building deleted");
     Ok(())
 }

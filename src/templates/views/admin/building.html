@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Buildings</title>
+    <link href="/static/css/admin_pages/shared.css" rel="stylesheet">
+  </head>
+  <body>
+    <aside>
+      <div class="aside-items">
+        <span class="aside-wordmark">RMS</span>
+        <a href="/admin/users">users</a>
+        <a href="/admin/buildings" class="current-page">buildings</a>
+      </div>
+    </aside>
+
+    <div class="dash-container">
+      <header class="dash-header">
+        <div class="header-group">
+          <a href="/admin" class="back-link">← back to dashboard</a>
+          <h1 class="page-title">buildings</h1>
+          <span class="count">{{ buildings_count }}</span>
+        </div>
+      </header>
+
+      <div class="table-panel">
+        <table>
+          <thead>
+            <tr>
+              <th>building</th>
+              <th>owner</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ building_rows }}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script type="module" src="/static/js/main.js"></script>
+  </body>
+</html>

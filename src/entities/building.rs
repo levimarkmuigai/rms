@@ -7,6 +7,12 @@ pub struct Building {
     pub name: String,
 }
 
+pub struct BuildingView {
+    pub id: Uuid,
+    pub name: String,
+    pub owner: String,
+}
+
 pub struct BuildingTableRow {
     pub id: Uuid,
     pub name: String,

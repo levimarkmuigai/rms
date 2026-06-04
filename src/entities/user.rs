@@ -164,6 +164,12 @@ pub struct RoleCount {
     pub caretakers: i64,
 }
 
+pub struct UserView {
+    pub id: Uuid,
+    pub email: String,
+    pub role: String,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

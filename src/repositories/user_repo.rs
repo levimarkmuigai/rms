@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{
     db::PgPool,
-    entities::user::{RoleCount, User},
+    entities::user::{RoleCount, User, UserView},
     error::AppError,
 };
 
@@ -42,6 +42,16 @@ pub fn update(
     Ok(())
 }
 
+pub fn delete(pool: &PgPool, id: &Uuid) -> Result<(), AppError> {
+    let mut client = pool.get()?;
+
+    client.execute("DELETE FROM users WHERE id = $1", &[id])?;
+
+    tracing::info!(user_id = %id, "user deleted");
+
+    Ok(())
+}
+
 pub fn find_by_email(pool: &PgPool, email: &str) -> Result<Option<User>, AppError> {
     let mut client = pool.get()?;
     let rows = client.query("SELECT * FROM users WHERE email = $1", &[&email])?;
@@ -59,6 +69,23 @@ pub fn email_exists(pool: &PgPool, email: &str) -> Result<bool, AppError> {
     let rows = client.query("SELECT 1 FROM users WHERE email = $1 LIMIT  1", &[&email])?;
 
     Ok(!rows.is_empty())
+}
+
+pub fn find_all(pool: &PgPool) -> Result<Vec<UserView>, AppError> {
+    let mut client = pool.get()?;
+    let rows = client.query(
+        "SELECT id, email, role FROM users WHERE role != 'admin' ORDER BY role",
+        &[],
+    )?;
+
+    Ok(rows
+        .iter()
+        .map(|r| UserView {
+            id: r.get("id"),
+            email: r.get("email"),
+            role: r.get("role"),
+        })
+        .collect())
 }
 
 pub fn find_unassigned_tenants(pool: &PgPool) -> Result<Vec<(Uuid, String)>, AppError> {

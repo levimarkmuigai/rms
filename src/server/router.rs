@@ -56,10 +56,6 @@ pub fn build(state: Arc<AppState>) -> Router {
         crate::handlers::landlord::buildings::add,
     );
     routes.insert(
-        ("POST", "/landlord/buildings/delete"),
-        crate::handlers::landlord::buildings::delete,
-    );
-    routes.insert(
         ("POST", "/landlord/units"),
         crate::handlers::landlord::unit::add,
     );
@@ -116,5 +112,20 @@ pub fn build(state: Arc<AppState>) -> Router {
     );
 
     routes.insert(("GET", "/admin"), crate::handlers::admin::dashboard::show);
+
+    routes.insert(("GET", "/admin/users"), crate::handlers::admin::users::show);
+    routes.insert(
+        ("POST", "/admin/user/delete"),
+        crate::handlers::admin::users::delete_user,
+    );
+
+    routes.insert(
+        ("GET", "/admin/buildings"),
+        crate::handlers::admin::buildings::show,
+    );
+    routes.insert(
+        ("POST", "/admin/building/delete"),
+        crate::handlers::admin::buildings::delete_building,
+    );
     Router { routes, state }
 }

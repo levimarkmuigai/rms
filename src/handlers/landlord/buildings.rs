@@ -6,7 +6,7 @@ use crate::{
     entities::user::Role,
     error::AppError,
     handlers::landlord::utils,
-    repositories::{activity_repo, building_repo, user_repo},
+    repositories::{building_repo, user_repo},
     server::{auth, form, request::Request, response::Response},
     services::landlord::building_service,
     state::AppState,
@@ -124,22 +124,6 @@ pub fn add(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
     building_service::add(&state.db, &sess.user_id, name, city, location, owner)?;
     tracing::info!(user_id = %sess.user_id, "building added");
     Ok(Response::redirect("/landlord/buildings"))
-}
-
-pub fn delete(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
-    let sess = auth::require_role(req, &state.sessions, Role::Landlord)?;
-    let f = form::parse(&req.body);
-    let building_id = f
-        .get("building_id")
-        .and_then(|v| v.parse::<Uuid>().ok())
-        .ok_or_else(|| AppError::BadRequest("invalid building_id".into()))?;
-
-    building_service::remove(&state.db, &sess.user_id, &building_id)?;
-
-    activity_repo::insert(&state.db, &sess.user_id, "removed a building")?;
-    tracing::info!(user_id = %sess.user_id, %building_id, "building deleted");
-
-    Ok(Response::redirect("/buildings"))
 }
 
 pub fn assign(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {

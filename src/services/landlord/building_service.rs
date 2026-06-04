@@ -34,10 +34,6 @@ pub fn add(
     building_repo::insert(pool, landlord_id, &id, &name, &city, &location, &owner)
 }
 
-pub fn remove(pool: &PgPool, landlord_id: &Uuid, id: &Uuid) -> Result<(), AppError> {
-    building_repo::delete(pool, landlord_id, id)
-}
-
 pub fn assign(pool: &PgPool, caretaker_id: &Uuid, id: &Uuid) -> Result<(), AppError> {
     let new_buildings_units = unit_repo::count_by_building(pool, id)?;
     let current_assignments = building_repo::find_by_caretaker(pool, caretaker_id)?;

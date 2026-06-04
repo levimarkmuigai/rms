@@ -1,12 +1,13 @@
 :root {
-  --light-base:    #F3F3F3;
-  --light-main:    #F0F0F0;
-  --light-card:    #FFFFFF;
-  --light-sunken:  #E8E8E8;
-  --light-border:  #E0E0E0;
-  --ink:           #111111;
-  --text-muted:    #111111;
-  --shadow-color:  170, 170, 170;
+  --light-base:   #F3F3F3;
+  --light-main:   #F0F0F0;
+  --light-card:   #FFFFFF;
+  --light-sunken: #E8E8E8;
+  --light-border: #E0E0E0;
+  --ink:          #111111;
+  --text-muted: #6B6B6B;
+  --text-dim:   #A0A0A0;
+  --shadow-color: 170, 170, 170;
 }
 
 * {
@@ -19,9 +20,72 @@
 body {
   background-color: var(--light-base);
   display: flex;
+  color: var(--ink);
   justify-content: center;
+  flex-direction: row;
+  min-height: 100vh;
   padding: 20px;
+  gap: 20px;
   line-height: 1.5;
+}
+
+
+aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--light-main);
+  border: 1px solid var(--light-border);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
+  width: 180px;
+  min-height: calc(100vh - 40px);
+  padding: 1.5rem;
+  position: sticky;
+  top: 20px;
+  overflow-y: auto;
+  align-self: flex-start;
+}
+
+.aside-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+}
+
+.aside-wordmark {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  align-self: flex-start;
+}
+
+.aside-items a {
+  background: transparent;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-align: center;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 10px 12px;
+  border: none;
+  cursor: pointer;
+  transition: color 200ms ease, transform 200ms ease;
+}
+
+.aside-items a:hover {
+  color: var(--text-dim);
+  transform: scale(0.95);
+}
+
+.aside-items a:active {
+  transform: scale(0.92);
 }
 
 .dash {
@@ -44,7 +108,7 @@ header {
 }
 
 .wordmark {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -76,14 +140,14 @@ header {
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
   letter-spacing: 0.06em;
 }
 
 
 .section-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -97,7 +161,7 @@ header {
 }
 
 .log-table th {
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -108,9 +172,9 @@ header {
 }
 
 .log-table td {
-  font-size: 12px;
-  padding: .65rem .75rem;
-  border-bottom: .5px solid var(--light-border);
+  font-size: 15px;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 0.5px solid var(--light-border);
 }
 
 .log-table tr:last-child td {
