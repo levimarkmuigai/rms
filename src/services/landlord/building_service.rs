@@ -30,6 +30,14 @@ pub fn add(
     if owner.is_empty() {
         return Err(AppError::BadRequest("owner is required".into()));
     }
+
+    let owned_buildings = building_repo::find_by_landlord(pool, landlord_id)?;
+
+    if owned_buildings.len() >= 5 {
+        return Err(AppError::BadRequest(
+            "you cannot add more than 5 buildings".into(),
+        ));
+    }
     let id = Uuid::new_v4();
     building_repo::insert(pool, landlord_id, &id, &name, &city, &location, &owner)
 }
