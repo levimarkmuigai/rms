@@ -67,6 +67,12 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
         .split_once(" ")
         .ok_or(AppError::BadRequest("user name not found".into()))?;
 
+    let occupied = if summary.occupied == 1 {
+        format!("{} unit", summary.occupied)
+    } else {
+        format!("{} units", summary.occupied)
+    };
+
     ctx.insert("profile_fname", first_name.to_string());
     ctx.insert("profile_lname", last_name.to_string());
     ctx.insert("profile_email", user.email.clone());
@@ -75,10 +81,10 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     if summary.has_buildings {
         ctx.insert("collected_revenue", utils::kes(summary.collected_revenue));
         ctx.insert("expected_revenue", utils::kes(summary.expected_revenue));
-        ctx.insert("occupancy_pct", format!("{}%", summary.occupancy_pct));
+        ctx.insert("occupied", occupied);
         ctx.insert(
             "vacant_units",
-            format!("{} vacany units", summary.vacant_units),
+            format!("{} vacant units", summary.vacant_units),
         );
         ctx.insert("total_arrears", utils::kes(summary.total_arrears));
         ctx.insert(
