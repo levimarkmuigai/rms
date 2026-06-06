@@ -152,7 +152,7 @@ fn payment_form() -> String {
      <input type="text" id="phone" name="phone">
      <span id="phone-error" class="error-message"></span>
      </div>
-     <button type="submit" class="form-button">initiate</button> 
+     <button type="submit" class="form-button">initiate</button>
      </form>
         "#
     )

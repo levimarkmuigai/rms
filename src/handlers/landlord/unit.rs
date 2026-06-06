@@ -114,7 +114,10 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
     let unit_header = match selected_stats {
         None => "<p class=\"empty-detail\">no units for this building.</p>".into(),
         Some(u) => {
-            let notice_html = notice_form(notice_repo::find_pending(&state.db, &u.id)?);
+            let notice_html = notice_form(
+                notice_repo::find_pending(&state.db, &u.id)?,
+                active_building,
+            );
             format!(
                 r#"<div class="building-info-bar">
                   <div class="info-group">
@@ -209,7 +212,7 @@ fn assign_form(tenant_options: Vec<(Uuid, String)>, unit_id: Uuid, building_id: 
     )
 }
 
-pub fn notice_form(notice_opt: Option<NoticeForm>) -> String {
+fn notice_form(notice_opt: Option<NoticeForm>, building_id: Uuid) -> String {
     notice_opt
         .map(|n| {
             format!(
@@ -223,10 +226,12 @@ pub fn notice_form(notice_opt: Option<NoticeForm>) -> String {
     <div class="notice-btns">
       <form action="/landlord/vacancy/approve" method="POST">
         <input type="hidden" name="notice_id" value="{notice_id}">
+        <input type="hidden" name="building_id" value="{building_id}">
         <button type="submit" class="notice-btn">approve</button>
       </form>
       <form id="reject-{notice_id}" action="/landlord/vacancy/reject" method="POST" class="reject-form">
         <input type="hidden" name="notice_id" value="{notice_id}">
+        <input type="hidden" name="building_id" value="{building_id}">
         <button type="submit" class="notice-btn danger-btn">reject</button>
       </form>
     </div>
@@ -254,8 +259,15 @@ pub fn approve_notice(req: &Request, state: &Arc<AppState>) -> Result<Response, 
         .and_then(|v| v.parse().ok())
         .ok_or(AppError::BadRequest("notice_id missing".into()))?;
 
+    let building_id: Uuid = f
+        .get("building_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("building_id missing".into()))?;
+
     notice_repo::approve(&state.db, &notice_id)?;
-    Ok(Response::redirect("/landlord/units"))
+    Ok(Response::redirect(&format!(
+        "/landlord/units?building_id={building_id}"
+    )))
 }
 
 pub fn reject_notice(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
@@ -268,6 +280,13 @@ pub fn reject_notice(req: &Request, state: &Arc<AppState>) -> Result<Response, A
 
     let reason = f.get("reason").cloned().unwrap_or_default();
 
+    let building_id: Uuid = f
+        .get("building_id")
+        .and_then(|v| v.parse().ok())
+        .ok_or(AppError::BadRequest("building_id missing".into()))?;
+
     notice_repo::reject(&state.db, &notice_id, &reason)?;
-    Ok(Response::redirect("/landlord/units"))
+    Ok(Response::redirect(&format!(
+        "/landlord/units?building_id={building_id}"
+    )))
 }
