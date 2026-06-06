@@ -8,6 +8,7 @@ export const assignUnitModal = () => {
   document.addEventListener('click', (event) => {
     const btn = event.target.closest('.open-assign-tenant');
     if (!btn) return;
+    modal.querySelector('input[name="unit_id"').value = btn.dataset.id;
     openModal(modal);
   });
 
