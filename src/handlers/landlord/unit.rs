@@ -65,7 +65,7 @@ pub fn assign_unit(req: &Request, state: &Arc<AppState>) -> Result<Response, App
 
     unit_service::assign(&state.db, &tenant_id, &unit_id)?;
     Ok(Response::redirect(&format!(
-        "/landlord/units?building_id={building_id})"
+        "/landlord/units?building_id={building_id}"
     )))
 }
 
@@ -86,7 +86,7 @@ pub fn vacate(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError
 
     activity_repo::insert(&state.db, &sess.user_id, "vacated tenant")?;
     Ok(Response::redirect(&format!(
-        "/landlord/units?building_id={building_id})"
+        "/landlord/units?building_id={building_id}"
     )))
 }
 
