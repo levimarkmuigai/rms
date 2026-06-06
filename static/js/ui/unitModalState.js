@@ -1,24 +1,25 @@
 import { closeModal, openModal } from "./utils/modal.js";
 
 export const assignUnitModal = () => {
-  const modalBtn = document.getElementById('open-assign-tenant');
-  const unitModal = document.getElementById('assign-unit-modal');
+  const modal = document.getElementById('assign-unit-modal');
 
-  if (!modalBtn || !unitModal) return;
+  if (!modal) return;
 
-  modalBtn.addEventListener('click', () => {
-    openModal(unitModal);
+  document.addEventListener('click', (event) => {
+    const btn = event.target.closest('.open-assign-tenant');
+    if (!btn) return;
+    openModal(modal);
   });
 
-  unitModal.addEventListener('click', (event) => {
-    if (event.target === unitModal) {
-      closeModal(unitModal);
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal(modal);
     }
   });
 
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
-      closeModal(unitModal);
+      closeModal(modal);
     }
   });
 };

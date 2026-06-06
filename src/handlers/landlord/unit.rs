@@ -144,7 +144,7 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                           <td><a href="/landlord/units?id={id}&building_id={b_id}" class="row-link">{number}</a></td>
                           <td>{tenant_name}</td>
                           <td class="row-actions">
-                            <button id="open-assign-tenant" data-id="{id}">assign tenant</button>
+                            <button class="open-assign-tenant" data-id="{id}">assign tenant</button>
                             <form action="/landlord/unit/vacate" method="POST">
                               <input type="hidden" name="unit_id" value="{id}">
                               <button type="submit">vacate tenant</button>

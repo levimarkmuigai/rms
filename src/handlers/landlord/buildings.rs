@@ -68,17 +68,17 @@ pub fn show(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> 
                 <td>{vacant}</td>
                 <td>{caretaker}</td>
                 <td class="row-actions">
-                <button class="open-assign-caretaker" id="open-assign-caretaker" data-id="{id}">assign caretaker</button>
-                <button class="open-add-unit" id="open-add-unit" data-id="{id}">add unit</button>
+                <button class="open-assign-caretaker"  data-id="{id}">assign caretaker</button>
+                <button class="open-add-unit" data-id="{id}">add unit</button>
                 <a href="/landlord/units?building_id={id}" class="row-link">view units</a>
                 </td>
                 </tr>"#,
-                    active = active,
-                    id = b.id,
-                    name = b.name,
-                    collected = utils::kes(b.collected),
-                    occupied = b.occupied,
-                    vacant = b.vacant,
+                active = active,
+                id = b.id,
+                name = b.name,
+                collected = utils::kes(b.collected),
+                occupied = b.occupied,
+                vacant = b.vacant,
             )
         })
         .collect();
