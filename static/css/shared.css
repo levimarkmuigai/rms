@@ -92,6 +92,7 @@ label,
 }
 
 input[type="text"],
+input[type="password"]
 select {
   background: var(--light-sunken);
   width: 100%;
@@ -106,6 +107,7 @@ select {
 }
 
 input[type="text"]:focus,
+input[type="password"],
 select:focus {
   border-color: var(--ink);
 }

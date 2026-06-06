@@ -31,6 +31,7 @@ export const addUnitModal = () => {
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.open-add-unit');
     if (!btn) return;
+    modal.querySelector('input[name="building-id"]').value = btn.dataset.id;
     openModal(modal);
   });
 
