@@ -42,6 +42,8 @@ pub fn add(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
 
     tracing::info!(user_id = %sess.user_id, %building_id, "unit added");
 
+    activity_repo::insert(&state.db, &sess.user_id, "added a unit")?;
+
     Ok(Response::redirect("/landlord/buildings"))
 }
 

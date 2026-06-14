@@ -22,7 +22,7 @@
   padding: 16px;
   border: 1px solid var(--light-border);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12), 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
 }
 
 #add-unit-modal, #assign-building-modal {
@@ -49,5 +49,5 @@
   padding: 16px;
   border: 1px solid var(--light-border);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12), 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 32px rgba(var(--shadow-color), 0.12);
 }

@@ -6,8 +6,12 @@ export const initBuildingModal = () => {
   if (!addBtn || !modal) return;
 
   addBtn.addEventListener('click', () => openModal(modal));
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(modal); });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal(modal);
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal(modal);
+  });
 };
 
 export const assignBuildingModal = () => {
@@ -20,8 +24,13 @@ export const assignBuildingModal = () => {
     openModal(modal);
   });
 
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(modal); });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal(modal);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal(modal);
+  });
 };
 
 export const addUnitModal = () => {
@@ -31,7 +40,9 @@ export const addUnitModal = () => {
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.open-add-unit');
     if (!btn) return;
-    modal.querySelector('input[name="building-id"]').value = btn.dataset.id;
+    modal.querySelector('input[name="building-id"]').value = btn
+      .dataset.id;
+
     openModal(modal);
   });
 

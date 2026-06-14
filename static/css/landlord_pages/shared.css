@@ -202,7 +202,7 @@ aside {
 }
 
 .table-panel {
-   background-color: var(--light-card);
+  background-color: var(--light-card);
   border: 1px solid var(--light-border);
   border-radius: 12px;
   padding: 0;
@@ -266,7 +266,8 @@ td button, td a {
   letter-spacing: 0.06em;
   color: var(--text-muted);
   cursor: pointer;
-  transition: background 150ms ease, color 150ms ease-in, transform 200ms ease-out;
+  transition: background 150ms ease, color 150ms ease-in,
+  transform 200ms ease-out;
 }
 
 td button:hover, td a:hover  {

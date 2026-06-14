@@ -92,7 +92,7 @@ label,
 }
 
 input[type="text"],
-input[type="password"]
+input[type="password"],
 select {
   background: var(--light-sunken);
   width: 100%;

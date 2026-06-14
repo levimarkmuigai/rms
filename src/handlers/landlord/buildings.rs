@@ -6,7 +6,7 @@ use crate::{
     entities::user::Role,
     error::AppError,
     handlers::landlord::utils,
-    repositories::{building_repo, user_repo},
+    repositories::{activity_repo, building_repo, user_repo},
     server::{auth, form, request::Request, response::Response},
     services::landlord::building_service,
     state::AppState,
@@ -123,6 +123,8 @@ pub fn add(req: &Request, state: &Arc<AppState>) -> Result<Response, AppError> {
 
     building_service::add(&state.db, &sess.user_id, name, city, location, owner)?;
     tracing::info!(user_id = %sess.user_id, "building added");
+
+    activity_repo::insert(&state.db, &sess.user_id, "added a building")?;
     Ok(Response::redirect("/landlord/buildings"))
 }
 
